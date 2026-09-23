@@ -383,18 +383,30 @@
     <!-- ============ ADHERENCE & BREAK ============ -->
     <div class="page" id="page-adherence">
       <section>
-        <div class="section-head"><h2>Team Adherence &amp; Break Summary</h2><span class="hint">Calculated across ALL ORT Agents</span></div>
+        <div class="section-head"><h2>Team Adherence &amp; Service Delivery Summary</h2><span class="hint">Team Metrics</span></div>
         <div class="kpi-row" id="kpiAdherence"></div>
       </section>
       <section>
-        <div class="section-head"><h2>Agent-wise Adherence, Over Break, Lag Hour &amp; Service Delivery</h2><span class="hint">TL Alignment Agents</span></div>
+        <div class="section-head"><h2>1. Agent Adherence, Over Break &amp; Lag Hour (ORT Sheet)</h2><span class="hint">TL Alignment Agents</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
               <th>Agent Name</th><th>VDI ID</th>
-              <th class="num">Adherence %</th><th class="num">Over Break</th><th class="num">Lag Hour</th><th class="num">SD Count</th>
+              <th class="num">Adherence %</th><th class="num">Over Break</th><th class="num">Lag Hour</th>
             </tr></thead>
             <tbody id="adherenceTable"></tbody>
+          </table>
+        </div>
+      </section>
+      <section style="margin-top:28px;">
+        <div class="section-head"><h2>2. Agent Service Delivery (Service Delivery Sheet)</h2><span class="hint">TL Alignment Agents</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Agent Name</th><th>VDI ID</th>
+              <th class="num">Service Delivery Count (SD)</th>
+            </tr></thead>
+            <tbody id="sdTable"></tbody>
           </table>
         </div>
       </section>
@@ -437,12 +449,12 @@
         </div>
       </section>
       <section style="margin-top:28px;">
-        <div class="section-head"><h2>2. Agent DKB Attendance (DKB Sheet)</h2><span class="hint">Aligned Agents</span></div>
+        <div class="section-head"><h2>2. Agent DKB Health % (DKB Sheet - Matched by ID)</h2><span class="hint">Aligned Agents</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
               <th>Agent Name</th><th>VDI ID</th>
-              <th class="num">DKB Present %</th><th>Attendance Status</th>
+              <th class="num">DKB Health %</th><th>Status</th>
             </tr></thead>
             <tbody id="dkbTable"></tbody>
           </table>
@@ -481,7 +493,7 @@
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxWBxBB0X_AQEYzpFUwKbbGWoo5XFlYfqHUj_xdYulxSlsC6EEu0pMhMpZRQyvjvizU/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzKTZyvzEjOIyGl-5Wo-2uj-LOlDyjCFZOI6o8kCn3r2e3PeJUBr_mJPC_y_E0G8lm4/exec";
 const REFRESH_INTERVAL_MS = 30000;
 const TARGET_TL_NAME = "Mohammad Imam Hossain";
 const EMPATHY_AGENT_TARGET = 0.88;   
@@ -655,7 +667,7 @@ const PAGE_META = {
   empathy:    {title:'Empathy Analysis', sub:'Parameter-wise empathy breakdown'},
   adherence:  {title:'Adherence & Break', sub:'Adherence, Over Break, Lag Hour & Service Delivery metrics'},
   ahtcfs:     {title:'AHT & CFS', sub:'Average Handle Time & First Contact Resolution'},
-  complaint:  {title:'Complaint & DKB', sub:'Complaint Escalation Accuracy & DKB Attendance'},
+  complaint:  {title:'Complaint & DKB', sub:'Complaint Escalation Accuracy & DKB Health %'},
   log:        {title:'Audit Log', sub:'Raw call-level audit records'}
 };
 
@@ -971,18 +983,36 @@ function renderAdherencePage(){
   const allOrt = DATA.ort;
   const box = document.getElementById('kpiAdherence'); box.innerHTML='';
 
+  // Adherence Team KPIs calculated across ALL ORT Sheet agents
   const adherenceVals = allOrt.map(r=>normPct(getRowVal(r, ['Adherence%','Adherence', 'Adherence Percent']))).filter(v=>v!==null);
   const avgAdherence = adherenceVals.length ? adherenceVals.reduce((a,b)=>a+b,0)/adherenceVals.length : 0;
   const overBreakCount = allOrt.filter(r=>parseDurationHours(getRowVal(r, ['Extra Break', 'Over Break', 'Break Over'])) > 0).length;
   const lagCount = allOrt.filter(r=>parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag'])) > 0).length;
   const totalLagHours = allOrt.reduce((s,r)=>s + parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag'])), 0);
 
-  kpiCard(box, 'Team Avg Adherence', pct(avgAdherence), avgAdherence>=0.9?'good':'warn', '◷', `All Sheet Agents`);
-  kpiCard(box, 'Agents with Over Break', overBreakCount, overBreakCount>0?'warn':'good', '⚠', `Out of ${allOrt.length} Sheet Agents`);
-  kpiCard(box, 'Agents with Lag', lagCount, lagCount>0?'warn':'good', '⏱', `Out of ${allOrt.length} Sheet Agents`);
-  kpiCard(box, 'Total Lag Hours', totalLagHours.toFixed(1)+'h', 'bad', '⏳', 'All Sheet Agents Sum');
-
+  // Service Delivery Count calculated specifically for TL "Mohammad Imam Hossain" aligned agents
   const alignedAgents = getAlignmentAgents(TARGET_TL_NAME);
+  const sdByVdi = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID', 'User ID'])));
+  const sdByName = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name'])));
+
+  let totalTlSdCount = 0;
+  const agentSdList = alignedAgents.map(ag => {
+    const normVdi = normalizeName(ag.vdi);
+    const normName = normalizeName(ag.name);
+    let sdRows = [];
+    if (normVdi && sdByVdi.has(normVdi)) sdRows = sdByVdi.get(normVdi);
+    else if (normName && sdByName.has(normName)) sdRows = sdByName.get(normName);
+    const count = sdRows.length;
+    totalTlSdCount += count;
+    return { name: ag.name, vdi: ag.vdi, sdCount: count };
+  });
+
+  kpiCard(box, 'Team Avg Adherence', pct(avgAdherence), avgAdherence>=0.9?'good':'warn', '◷', `All Sheet Agents`);
+  kpiCard(box, 'Agents with Over Break', overBreakCount, overBreakCount>0?'warn':'good', '⚠', `All Sheet Agents`);
+  kpiCard(box, 'Total Lag Hours', totalLagHours.toFixed(1)+'h', 'bad', '⏳', 'All Sheet Agents Sum');
+  kpiCard(box, 'Service Delivery Count', totalTlSdCount, 'good', '🚚', `TL ${TARGET_TL_NAME}`);
+
+  // Table 1: Adherence, Over Break & Lag Hour
   const ortMap = new Map();
   allOrt.forEach(r => {
     const vdi = normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID']));
@@ -991,9 +1021,7 @@ function renderAdherencePage(){
     if (name) ortMap.set('name_' + name, r);
   });
 
-  const sdByVdi = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID'])));
-
-  const matchedRows = alignedAgents.map(ag => {
+  const matchedAdherenceRows = alignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
     
@@ -1002,27 +1030,37 @@ function renderAdherencePage(){
     const overBreak = ortRow ? parseDurationHours(getRowVal(ortRow, ['Extra Break', 'Over Break'])) : 0;
     const lag = ortRow ? parseDurationHours(getRowVal(ortRow, ['Lag Time', 'Lag Hour'])) : 0;
 
-    const sdRows = sdByVdi.get(normVdi) || [];
-    const sdCount = sdRows.length;
-
-    return { name: ag.name, vdi: ag.vdi, adh, overBreak, lag, sdCount };
+    return { name: ag.name, vdi: ag.vdi, adh, overBreak, lag };
   });
 
-  const tbody = document.getElementById('adherenceTable'); tbody.innerHTML='';
-  if(matchedRows.length===0){
-    tbody.appendChild(el('tr',{},`<td colspan="6" class="empty-note">No alignment agents found for TL Mohammad Imam Hossain.</td>`));
-    return;
+  const tbodyA = document.getElementById('adherenceTable'); tbodyA.innerHTML='';
+  if(matchedAdherenceRows.length===0){
+    tbodyA.appendChild(el('tr',{},`<td colspan="5" class="empty-note">No alignment agents found for TL ${TARGET_TL_NAME}.</td>`));
+  } else {
+    matchedAdherenceRows.sort((a,b)=>(a.adh??1)-(b.adh??1)).forEach(r=>{
+      tbodyA.appendChild(el('tr',{}, `
+        <td>${r.name || '—'}</td>
+        <td>${r.vdi || '—'}</td>
+        <td class="num ${r.adh!==null && r.adh<0.85?'cell-red':''}">${r.adh!==null?pct(r.adh):'—'}</td>
+        <td class="num">${r.overBreak>0?fmtHoursMin(r.overBreak):'—'}</td>
+        <td class="num">${r.lag>0?fmtHoursMin(r.lag):'—'}</td>
+      `));
+    });
   }
-  matchedRows.sort((a,b)=>(a.adh??1)-(b.adh??1)).forEach(r=>{
-    tbody.appendChild(el('tr',{}, `
-      <td>${r.name || '—'}</td>
-      <td>${r.vdi || '—'}</td>
-      <td class="num ${r.adh!==null && r.adh<0.85?'cell-red':''}">${r.adh!==null?pct(r.adh):'—'}</td>
-      <td class="num">${r.overBreak>0?fmtHoursMin(r.overBreak):'—'}</td>
-      <td class="num">${r.lag>0?fmtHoursMin(r.lag):'—'}</td>
-      <td class="num">${r.sdCount}</td>
-    `));
-  });
+
+  // Table 2: Separate Table for Service Delivery
+  const tbodySD = document.getElementById('sdTable'); tbodySD.innerHTML='';
+  if(agentSdList.length===0){
+    tbodySD.appendChild(el('tr',{},`<td colspan="3" class="empty-note">No Service Delivery data found for alignment agents.</td>`));
+  } else {
+    agentSdList.sort((a,b)=>b.sdCount - a.sdCount).forEach(r=>{
+      tbodySD.appendChild(el('tr',{}, `
+        <td>${r.name || '—'}</td>
+        <td>${r.vdi || '—'}</td>
+        <td class="num cell-good">${r.sdCount}</td>
+      `));
+    });
+  }
 }
 
 // ---------- AHT & CFS PAGE ----------
@@ -1074,9 +1112,10 @@ function renderComplaintPage(){
   const complaintByVdi = groupBy(DATA.complaint, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID'])));
   const complaintByName = groupBy(DATA.complaint, r => normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name'])));
 
+  // DKB Sheet lookup by ID
   const dkbById = new Map();
   (DATA.dkb || []).forEach(r => {
-    const id = normalizeName(getRowVal(r, ['ID', 'VDI ID', 'VDI', 'Emp ID', 'Employee ID']));
+    const id = normalizeName(getRowVal(r, ['ID', 'VDI ID', 'VDI', 'Emp ID', 'Employee ID', 'User ID']));
     const name = normalizeName(getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']));
     if (id) dkbById.set(id, r);
     if (name && !dkbById.has(name)) dkbById.set(name, r);
@@ -1085,7 +1124,7 @@ function renderComplaintPage(){
   let totalValidSum = 0;
   let totalInvalidSum = 0;
   let totalComplaintsSum = 0;
-  let dkbPercentages = [];
+  let dkbHealthPercentages = [];
 
   const agentComplaintData = alignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
@@ -1114,9 +1153,9 @@ function renderComplaintPage(){
           'Accuracy', 'Validity', 'Status', 'Complaint Status', 'Valid/Invalid', 'Result'
         ])).trim().toLowerCase();
 
-        if (accuracyVal === 'valid' || accuracyVal === '1' || accuracyVal === 'yes' || accuracyVal === 'true' || accuracyVal === 'pass') {
+        if (accuracyVal === 'valid' || accuracyVal === '1' || accuracyVal === 'yes' || accuracyVal === 'pass') {
           validCount++;
-        } else if (accuracyVal === 'invalid' || accuracyVal === '0' || accuracyVal === 'no' || accuracyVal === 'false' || accuracyVal === 'fail') {
+        } else if (accuracyVal === 'invalid' || accuracyVal === '0' || accuracyVal === 'no' || accuracyVal === 'fail') {
           invalidCount++;
         } else if (accuracyVal.includes('valid') && !accuracyVal.includes('invalid')) {
           validCount++;
@@ -1133,42 +1172,32 @@ function renderComplaintPage(){
     totalInvalidSum += invalidCount;
     totalComplaintsSum += totalComp;
 
-    return {
-      name: ag.name,
-      vdi: ag.vdi,
-      validCount,
-      invalidCount,
-      totalComp,
-      validPct
-    };
+    return { name: ag.name, vdi: ag.vdi, validCount, invalidCount, totalComp, validPct };
   });
 
+  // DKB Health % mapped by ID
   const agentDkbData = alignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
 
     const dkbRow = dkbById.get(normVdi) || dkbById.get(normName) || null;
-    const dkbPct = dkbRow ? normPct(getRowVal(dkbRow, ['DKB Attendance', 'Present %', 'DKB Present %', 'DKB %', 'Present', 'Attendance %'])) : null;
+    const dkbHealthPct = dkbRow ? normPct(getRowVal(dkbRow, ['Health %', 'Health%', 'Health', 'DKB Attendance', 'Present %', 'DKB Present %', 'DKB %', 'Present'])) : null;
 
-    if (dkbPct !== null) dkbPercentages.push(dkbPct);
+    if (dkbHealthPct !== null) dkbHealthPercentages.push(dkbHealthPct);
 
-    return {
-      name: ag.name,
-      vdi: ag.vdi,
-      dkbPct
-    };
+    return { name: ag.name, vdi: ag.vdi, dkbHealthPct };
   });
 
   const avgValidEscPct = totalComplaintsSum > 0 ? (totalValidSum / totalComplaintsSum) : 0;
-  const avgDkb = dkbPercentages.length ? (dkbPercentages.reduce((a,b)=>a+b,0)/dkbPercentages.length) : 0;
+  const avgDkbHealth = dkbHealthPercentages.length ? (dkbHealthPercentages.reduce((a,b)=>a+b,0)/dkbHealthPercentages.length) : 0;
 
   kpiCard(box, 'Total Complaints', totalComplaintsSum, 'bad', '⚠', `Mohammad Imam Hossain Team`);
   kpiCard(box, 'Valid Count', totalValidSum, 'warn', '✓', `Total Valid Sum`);
   kpiCard(box, 'Invalid Count', totalInvalidSum, 'good', '✕', `Total Invalid Sum`);
   kpiCard(box, 'Team Valid Escalation %', pct(avgValidEscPct), 'purple', '⚑', `Valid / Total`);
-  kpiCard(box, 'Avg DKB Attendance', pct(avgDkb), 'blue', '▦', `Team Average`);
+  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), 'blue', '▦', `Matched by ID`);
 
-  // Table 1: Complaint Escalation Accuracy Table
+  // Table 1: Escalation Accuracy Breakdown Table
   const tbodyC = document.getElementById('complaintTable'); tbodyC.innerHTML='';
   if (agentComplaintData.length === 0) {
     tbodyC.appendChild(el('tr',{},`<td colspan="6" class="empty-note">No alignment agents found for Mohammad Imam Hossain.</td>`));
@@ -1185,18 +1214,18 @@ function renderComplaintPage(){
     });
   }
 
-  // Table 2: DKB Attendance Table (Placed after Complaint Table)
+  // Table 2: Agent DKB Health % Table
   const tbodyD = document.getElementById('dkbTable'); tbodyD.innerHTML='';
   if (agentDkbData.length === 0) {
-    tbodyD.appendChild(el('tr',{},`<td colspan="4" class="empty-note">No DKB data found for alignment agents.</td>`));
+    tbodyD.appendChild(el('tr',{},`<td colspan="4" class="empty-note">No DKB Health data found for alignment agents.</td>`));
   } else {
-    agentDkbData.sort((a,b) => (b.dkbPct??0) - (a.dkbPct??0)).forEach(r => {
-      const isGood = r.dkbPct !== null && r.dkbPct >= 0.95;
+    agentDkbData.sort((a,b) => (b.dkbHealthPct??0) - (a.dkbHealthPct??0)).forEach(r => {
+      const isGood = r.dkbHealthPct !== null && r.dkbHealthPct >= 0.85;
       tbodyD.appendChild(el('tr', {}, `
         <td>${r.name || '—'}</td>
         <td>${r.vdi || '—'}</td>
-        <td class="num ${r.dkbPct !== null && !isGood ? 'cell-red' : 'cell-good'}">${r.dkbPct !== null ? pct(r.dkbPct) : '—'}</td>
-        <td>${r.dkbPct !== null ? (isGood ? '<span class="pill good">Satisfactory</span>' : '<span class="pill bad">Low Attendance</span>') : '—'}</td>
+        <td class="num ${r.dkbHealthPct !== null && !isGood ? 'cell-red' : 'cell-good'}">${r.dkbHealthPct !== null ? pct(r.dkbHealthPct) : '—'}</td>
+        <td>${r.dkbHealthPct !== null ? (isGood ? '<span class="pill good">Target Met</span>' : '<span class="pill bad">Needs Improvement</span>') : '—'}</td>
       `));
     });
   }
@@ -1253,8 +1282,8 @@ function exportCSV(){
     rowsData = agentAggregates(true).map(a=>[a.agent,a.total,a.pass,a.fail,pct(a.failPct),a.ep,a.ef,a.empPct!==null?pct(a.empPct):'']);
     filename='agent_performance';
   } else if(CURRENT_PAGE==='adherence'){
-    cols=['Agent Name','VDI ID','Adherence%','Over Break','Lag Hour','SD Count'];
-    rowsData = getAlignmentAgents(TARGET_TL_NAME).map(ag=>[ag.name, ag.vdi, '','','','0']);
+    cols=['Agent Name','VDI ID','Adherence%','Over Break','Lag Hour'];
+    rowsData = getAlignmentAgents(TARGET_TL_NAME).map(ag=>[ag.name, ag.vdi, '','','']);
     filename='adherence_break';
   } else if(CURRENT_PAGE==='complaint'){
     cols=['Agent Name','VDI ID','Valid Count','Invalid Count','Total Complaint','Valid%'];
@@ -1267,7 +1296,7 @@ function exportCSV(){
     filename='audit_log';
   }
   const lines = [cols.join(',')].concat(rowsData.map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')));
-  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const blob = new Blob altered = new Blob([lines.join('\n')], {type:'text/csv'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href=url; a.download=`${filename}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
   URL.revokeObjectURL(url);
