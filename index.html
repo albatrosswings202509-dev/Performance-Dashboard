@@ -383,7 +383,7 @@
     <!-- ============ ADHERENCE & BREAK ============ -->
     <div class="page" id="page-adherence">
       <section>
-        <div class="section-head"><h2>Team Adherence &amp; Service Delivery Summary</h2><span class="hint">TL ORT Sheet Metrics</span></div>
+        <div class="section-head"><h2>Team Adherence &amp; Service Delivery Summary</h2><span class="hint">TL ORT Row Metrics</span></div>
         <div class="kpi-row" id="kpiAdherence"></div>
       </section>
       <section>
@@ -415,7 +415,7 @@
     <!-- ============ AHT & CFS ============ -->
     <div class="page" id="page-ahtcfs">
       <section>
-        <div class="section-head"><h2>Team AHT &amp; CFS Summary</h2><span class="hint">TL ORT Metrics &amp; Aligned Target Met</span></div>
+        <div class="section-head"><h2>Team AHT &amp; CFS Summary</h2><span class="hint">TL ORT Row Metrics &amp; Aligned Target Met</span></div>
         <div class="kpi-row" id="kpiAhtCfs"></div>
       </section>
       <section>
@@ -584,31 +584,61 @@ function getRowsByTL(sheetData, targetTL) {
   });
 }
 
-// Extract exact row for "Mohammad Imam Hossain" from "TL ORT" sheet
+// Function to pull exact "Mohammad Imam Hossain" row metrics from "TL ORT" Sheet
 function getTlOrtMetrics(targetTL) {
   const normTarget = normalizeName(targetTL);
   const tlOrtList = DATA.tlOrt || [];
   let row = null;
-  
+
+  // Search exact TL Name in TL ORT Sheet
   for (const r of tlOrtList) {
-    const tl = String(getRowVal(r, ['Team Leader', 'TL', 'TL Name', 'Supervisor', 'TeamLeader', 'Name', 'Agent Name']) || '').trim();
-    const normTL = normalizeName(tl);
-    if (normTL.includes(normTarget) || normTarget.includes(normTL)) {
+    const tlVal = String(getRowVal(r, ['TL Name', 'Tl Name', 'Team Leader', 'TL', 'Supervisor', 'Name', 'Agent Name', 'Agent']) || '').trim();
+    const normTL = normalizeName(tlVal);
+    if (normTL && (normTL.includes(normTarget) || normTarget.includes(normTL) || (normTL.includes('imam') && normTL.includes('hossain')))) {
       row = r;
       break;
+    }
+  }
+
+  // Fallback search inside row JSON string
+  if (!row && tlOrtList.length > 0) {
+    for (const r of tlOrtList) {
+      const rowStr = JSON.stringify(r).toLowerCase();
+      if (rowStr.includes('imam') || rowStr.includes('hossain')) {
+        row = r;
+        break;
+      }
+    }
+    if (!row && tlOrtList.length === 1) {
+      row = tlOrtList[0];
     }
   }
 
   let aht = 0, cfs = null, adh = null, lag = 0, overBreak = 0;
 
   if (row) {
-    aht = numOf(getRowVal(row, ['AHT', 'Avg AHT', 'Average AHT', 'AHT (sec)', 'AHT Sec']));
-    cfs = normPct(getRowVal(row, ['CFS', 'CFS %', 'Avg CFS %', 'Avg CFS', 'Average CFS']));
-    adh = normPct(getRowVal(row, ['Adherence', 'Adherence %', 'Avg Adherence', 'Avg Adherence %', 'Team Avg Adherence']));
-    lag = parseDurationHours(getRowVal(row, ['Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag']));
-    overBreak = numOf(getRowVal(row, ['Over Break', 'Agents with Over Break', 'Over Break Count', 'Extra Break']));
+    // Extract AHT
+    const rawAht = getRowVal(row, ['AHT', 'Avg AHT', 'Average AHT', 'AHT (sec)', 'AHT Sec', 'AHTSec']);
+    aht = numOf(rawAht);
+
+    // Extract CFS
+    const rawCfs = getRowVal(row, ['CFS %', 'CFS', 'Avg CFS %', 'Avg CFS', 'Average CFS', 'CFS Percent', 'CFS%']);
+    cfs = normPct(rawCfs);
+
+    // Extract Adherence
+    const rawAdh = getRowVal(row, ['Adherence %', 'Adherence', 'Avg Adherence', 'Avg Adherence %', 'Team Avg Adherence', 'Adherence%']);
+    adh = normPct(rawAdh);
+
+    // Extract Lag Hour
+    const rawLag = getRowVal(row, ['Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag', 'LagTime']);
+    lag = parseDurationHours(rawLag);
+
+    // Extract Over Break
+    const rawOb = getRowVal(row, ['Over Break', 'Agents with Over Break', 'Over Break Count', 'Extra Break', 'OverBreak', 'Break Over']);
+    const obParsed = parseDurationHours(rawOb);
+    overBreak = obParsed > 0 ? obParsed : numOf(rawOb);
   } else {
-    // Fallback if TL ORT row is unavailable
+    // Secondary fallback from ORT sheet if TL ORT is missing
     const ortRows = getRowsByTL(DATA.ort, targetTL);
     if (ortRows.length > 0) {
       const ahtVals = ortRows.map(r => numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec']))).filter(v => v > 0);
@@ -834,7 +864,7 @@ function renderOverview(){
   const efSum = tlAudits.reduce((s,r)=>s+numOf(getRowVal(r, ['Total Emp Parameter Fail Count', 'Emp Fail'])),0);
   const empPct = (epSum+efSum)>0 ? epSum/(epSum+efSum) : 0;
 
-  // 2. ORT Metrics directly from "TL ORT" sheet for TL "Mohammad Imam Hossain"
+  // 2. ORT Metrics directly from "TL ORT" sheet row for "Mohammad Imam Hossain"
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
   const avgAht = tlOrtMetrics.aht;
   const avgCfs = tlOrtMetrics.cfs;
