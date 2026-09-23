@@ -304,11 +304,11 @@
     <!-- ============ OVERVIEW ============ -->
     <div class="page active" id="page-overview">
       <section>
-        <div class="section-head"><h2>Mohammad Imam Hossain — Team KPI Summary</h2><span class="hint">Strict TL Aligned Metrics</span></div>
+        <div class="section-head"><h2>Mohammad Imam Hossain — Team KPI Summary</h2><span class="hint">TL Aligned (Active + Inactive)</span></div>
         <div class="kpi-row" id="kpiOverview"></div>
       </section>
       <section>
-        <div class="section-head"><h2>Agent Leaderboard</h2><span class="hint">TL Alignment Roster</span></div>
+        <div class="section-head"><h2>Agent Leaderboard</h2><span class="hint">TL Active Agents</span></div>
         <div class="grid-2">
           <div>
             <div class="section-head" style="margin-bottom:8px;"><h2 style="font-size:13px;">Top CE Holders</h2></div>
@@ -321,7 +321,7 @@
         </div>
       </section>
       <section>
-        <div class="section-head"><h2>Top Performers</h2><span class="hint">TL Alignment Roster</span></div>
+        <div class="section-head"><h2>Top Performers</h2><span class="hint">TL Active Agents</span></div>
         <div class="grid-3">
           <div>
             <div class="section-head" style="margin-bottom:8px;"><h2 style="font-size:13px;">Top 5 Empathy</h2></div>
@@ -342,15 +342,15 @@
     <!-- ============ AGENT PERFORMANCE ============ -->
     <div class="page" id="page-agent">
       <div class="filterbar">
-        <div class="fgroup"><label>Filter Agent</label><select id="agentSelect" onchange="renderAgentPage()"><option value="">All Roster Agents</option></select></div>
+        <div class="fgroup"><label>Filter Agent (Active)</label><select id="agentSelect" onchange="renderAgentPage()"><option value="">All Active Roster Agents</option></select></div>
       </div>
       <div class="spotlight" id="agentSpotlight" style="display:none;"></div>
       <section>
-        <div class="section-head"><h2>Team Performance Summary</h2><span class="hint">Calculated across ALL Sheet Agents</span></div>
+        <div class="section-head"><h2>Team Performance Summary</h2><span class="hint">TL Aligned Summary</span></div>
         <div class="kpi-row" id="kpiAgent"></div>
       </section>
       <section>
-        <div class="section-head"><h2>Agent Performance Table</h2><span class="hint">TL Roster Agents</span></div>
+        <div class="section-head"><h2>Agent Performance Table</h2><span class="hint">TL Active Agents Only</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -366,11 +366,11 @@
     <!-- ============ EMPATHY ANALYSIS ============ -->
     <div class="page" id="page-empathy">
       <section>
-        <div class="section-head"><h2>Empathy Parameter — Overall Pass %</h2><span class="hint">All Sheet Agents</span></div>
+        <div class="section-head"><h2>Empathy Parameter — Overall Pass %</h2><span class="hint">TL Aligned Summary</span></div>
         <div class="grid-3" id="empathyParamCards" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;"></div>
       </section>
       <section>
-        <div class="section-head"><h2>Agent × Parameter Matrix</h2><span class="hint">TL Roster Agents</span></div>
+        <div class="section-head"><h2>Agent × Parameter Matrix</h2><span class="hint">TL Active Agents Only</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr id="empathyMatrixHead"></tr></thead>
@@ -383,11 +383,11 @@
     <!-- ============ ADHERENCE & BREAK ============ -->
     <div class="page" id="page-adherence">
       <section>
-        <div class="section-head"><h2>Team Adherence &amp; Service Delivery Summary</h2><span class="hint">Team Metrics</span></div>
+        <div class="section-head"><h2>Team Adherence &amp; Service Delivery Summary</h2><span class="hint">TL Aligned (Active + Inactive)</span></div>
         <div class="kpi-row" id="kpiAdherence"></div>
       </section>
       <section>
-        <div class="section-head"><h2>1. Agent Adherence, Over Break &amp; Lag Hour (ORT Sheet)</h2><span class="hint">TL Alignment Agents</span></div>
+        <div class="section-head"><h2>1. Agent Adherence, Over Break &amp; Lag Hour (ORT Sheet)</h2><span class="hint">TL Active Agents Only</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -399,7 +399,7 @@
         </div>
       </section>
       <section style="margin-top:28px;">
-        <div class="section-head"><h2>2. Agent Service Delivery (Service Delivery Sheet)</h2><span class="hint">TL Alignment Agents</span></div>
+        <div class="section-head"><h2>2. Agent Service Delivery (Service Delivery Sheet)</h2><span class="hint">TL Active Agents Only</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -415,11 +415,11 @@
     <!-- ============ AHT & CFS ============ -->
     <div class="page" id="page-ahtcfs">
       <section>
-        <div class="section-head"><h2>Team AHT &amp; CFS Summary</h2><span class="hint">Calculated across ALL ORT Agents</span></div>
+        <div class="section-head"><h2>Team AHT &amp; CFS Summary</h2><span class="hint">TL Aligned (Active + Inactive)</span></div>
         <div class="kpi-row" id="kpiAhtCfs"></div>
       </section>
       <section>
-        <div class="section-head"><h2>Agent-wise AHT &amp; CFS</h2><span class="hint">TL Roster Agents</span></div>
+        <div class="section-head"><h2>Agent-wise AHT &amp; CFS</h2><span class="hint">TL Active Agents Only</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Agent</th><th class="num">AHT (sec)</th><th>AHT Status</th><th class="num">CFS %</th><th>CFS Status</th></tr></thead>
@@ -432,11 +432,11 @@
     <!-- ============ COMPLAINT & DKB ============ -->
     <div class="page" id="page-complaint">
       <section>
-        <div class="section-head"><h2>Team Complaint &amp; DKB Summary</h2><span class="hint">Mohammad Imam Hossain Team</span></div>
+        <div class="section-head"><h2>Team Complaint &amp; DKB Summary</h2><span class="hint">TL Aligned (Active + Inactive)</span></div>
         <div class="kpi-row" id="kpiComplaint"></div>
       </section>
       <section>
-        <div class="section-head"><h2>1. Escalation Accuracy Breakdown (Complaint Sheet)</h2><span class="hint">Aligned Agents</span></div>
+        <div class="section-head"><h2>1. Escalation Accuracy Breakdown (Complaint Sheet)</h2><span class="hint">TL Active Agents Only</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -449,7 +449,7 @@
         </div>
       </section>
       <section style="margin-top:28px;">
-        <div class="section-head"><h2>2. Agent DKB Health % (DKB Sheet - Matched by ID)</h2><span class="hint">Aligned Agents</span></div>
+        <div class="section-head"><h2>2. Agent DKB Health % (DKB Sheet - Matched by ID)</h2><span class="hint">TL Active Agents Only</span></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -538,7 +538,6 @@ function normPct(v){
   return n > 1 ? n / 100 : n; 
 }
 
-// Improved duration parser handling HH:MM:SS, Date strings, and decimals
 function parseDurationHours(v){
   if(v === null || v === undefined || v === '') return 0;
   let s = String(v).trim();
@@ -604,12 +603,13 @@ function processPayload(json) {
 }
 
 // ---------- ROSTER & ALIGNMENT HELPERS ----------
-function getAlignmentAgents(tlNameFilter = null) {
+function getAlignmentAgents(tlNameFilter = null, activeOnly = false) {
   const list = [];
   (DATA.alignment || []).forEach(row => {
     const name = String(getRowVal(row, ['Agent Name', 'Name', 'Agent', 'Employee Name', 'Staff Name', 'Resource Name']) || '').trim();
     const vdi = String(getRowVal(row, ['VDI ID', 'VDI', 'VDI_ID', 'Emp ID', 'Employee ID', 'VDIID', 'User ID', 'ID']) || '').trim();
     const tl = String(getRowVal(row, ['Team Leader', 'TL', 'TL Name', 'Supervisor']) || '').trim();
+    const status = String(getRowVal(row, ['Status', 'Agent Status', 'Emp Status', 'State']) || '').trim().toLowerCase();
 
     if (tlNameFilter) {
       const normTL = normalizeName(tl);
@@ -619,15 +619,19 @@ function getAlignmentAgents(tlNameFilter = null) {
       }
     }
 
+    if (activeOnly) {
+      if (status === 'inactive') return;
+    }
+
     if (name || vdi) {
-      list.push({ name, vdi, tl, row });
+      list.push({ name, vdi, tl, status: status || 'active', row });
     }
   });
   return list;
 }
 
-function isRosterAgent(agentName, vdiId = '') {
-  const alignedList = getAlignmentAgents(TARGET_TL_NAME);
+function isRosterAgent(agentName, vdiId = '', activeOnly = false) {
+  const alignedList = getAlignmentAgents(TARGET_TL_NAME, activeOnly);
   if (alignedList.length === 0) return false;
 
   const normName = normalizeName(agentName);
@@ -730,13 +734,13 @@ function kpiCard(container, label, value, iconClass, icon, sub='', subClass=''){
 }
 
 // ---------- AGGREGATION ----------
-function agentAggregates(onlyRoster=false){
+function agentAggregates(onlyRoster=false, activeOnly=true){
   const byAgent = groupBy(DATA.agentAudits, r => String(getRowVal(r, ['Agent Name', 'Agent', 'Name']) || 'Unknown').trim());
   const out = [];
   byAgent.forEach((rows, agent) => {
     if(!agent || agent==='Unknown') return;
     const sampleVdi = String(getRowVal(rows[0], ['VDI ID', 'VDI', 'VDI_ID', 'Emp ID']) || '').trim();
-    if(onlyRoster && !isRosterAgent(agent, sampleVdi)) return;
+    if(onlyRoster && !isRosterAgent(agent, sampleVdi, activeOnly)) return;
 
     const total = rows.length;
     const pass = rows.filter(r=>isPass(getRowVal(r, ['Pass or Fail', 'Result', 'Pass/Fail']))).length;
@@ -759,18 +763,13 @@ function agentAggregates(onlyRoster=false){
 function renderOverview(){
   const box = document.getElementById('kpiOverview'); box.innerHTML='';
   
-  const alignedAgents = getAlignmentAgents(TARGET_TL_NAME);
-  const tlAgentsCount = alignedAgents.length;
+  // ALL Aligned Agents (Active + Inactive) for TL KPI Cards
+  const allAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, false);
+  const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
+  const tlAgentsCount = allAlignedAgents.length;
 
-  // 1. Audit Calculation for TL "Mohammad Imam Hossain"
-  let tlAudits = DATA.agentAudits.filter(r => {
-    const tl = String(getRowVal(r, ['Team Leader', 'TL', 'TL Name', 'Supervisor']) || '').trim();
-    return normalizeName(tl).includes(normalizeName(TARGET_TL_NAME));
-  });
-
-  if (tlAudits.length === 0) {
-    tlAudits = DATA.agentAudits.filter(r => isRosterAgent(getRowVal(r, ['Agent Name', 'Agent', 'Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID'])));
-  }
+  // 1. Audit Calculation for TL Mohammad Imam Hossain (Active + Inactive)
+  let tlAudits = DATA.agentAudits.filter(r => isRosterAgent(getRowVal(r, ['Agent Name', 'Agent', 'Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
 
   const totalAudits = tlAudits.length;
   const passCount = tlAudits.filter(r=>isPass(getRowVal(r, ['Pass or Fail', 'Result', 'Pass/Fail']))).length;
@@ -780,27 +779,23 @@ function renderOverview(){
   const efSum = tlAudits.reduce((s,r)=>s+numOf(getRowVal(r, ['Total Emp Parameter Fail Count', 'Emp Fail'])),0);
   const empPct = (epSum+efSum)>0 ? epSum/(epSum+efSum) : 0;
 
-  // 2. CFS and AHT Strictly Calculated for Aligned Agents of TL Mohammad Imam Hossain
-  const tlOrt = DATA.ort.filter(r => {
-    const name = getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']);
-    const vdi = getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID']);
-    return isRosterAgent(name, vdi);
-  });
+  // 2. ORT Metrics (Active + Inactive)
+  const tlOrtAll = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
   
-  const ahtVals = tlOrt.map(r=>numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec']))).filter(v=>v>0);
+  const ahtVals = tlOrtAll.map(r=>numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec']))).filter(v=>v>0);
   const avgAht = ahtVals.length ? ahtVals.reduce((a,b)=>a+b,0)/ahtVals.length : 0;
 
-  const cfsVals = tlOrt.map(r=>normPct(getRowVal(r, ['CFS%','CFS', 'CFS Percent']))).filter(v=>v!==null);
+  const cfsVals = tlOrtAll.map(r=>normPct(getRowVal(r, ['CFS%','CFS', 'CFS Percent']))).filter(v=>v!==null);
   const avgCfs = cfsVals.length ? cfsVals.reduce((a,b)=>a+b,0)/cfsVals.length : 0;
 
-  const adhVals = tlOrt.map(r=>normPct(getRowVal(r, ['Adherence%','Adherence']))).filter(v=>v!==null);
+  const adhVals = tlOrtAll.map(r=>normPct(getRowVal(r, ['Adherence%','Adherence']))).filter(v=>v!==null);
   const avgAdh = adhVals.length ? adhVals.reduce((a,b)=>a+b,0)/adhVals.length : 0;
 
-  // 3. Service Delivery Count for TL Aligned Agents
+  // 3. Service Delivery Count (Active + Inactive)
   const sdByVdi = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID', 'User ID'])));
   const sdByName = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name'])));
   let tlSdCount = 0;
-  alignedAgents.forEach(ag => {
+  allAlignedAgents.forEach(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
     let sdRows = [];
@@ -809,11 +804,11 @@ function renderOverview(){
     tlSdCount += sdRows.length;
   });
 
-  // 4. Escalation Valid % for TL Aligned Agents
+  // 4. Escalation Valid % (Active + Inactive)
   const complaintByVdi = groupBy(DATA.complaint, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID'])));
   const complaintByName = groupBy(DATA.complaint, r => normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name'])));
   let totalValid = 0, totalComp = 0;
-  alignedAgents.forEach(ag => {
+  allAlignedAgents.forEach(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
     let cRows = [];
@@ -841,7 +836,7 @@ function renderOverview(){
   });
   const validEscPct = totalComp > 0 ? (totalValid / totalComp) : 0;
 
-  // 5. DKB Health % for TL Aligned Agents
+  // 5. DKB Health % (Active + Inactive)
   const dkbById = new Map();
   (DATA.dkb || []).forEach(r => {
     const id = normalizeName(getRowVal(r, ['ID', 'VDI ID', 'VDI', 'Emp ID', 'Employee ID', 'User ID']));
@@ -850,7 +845,7 @@ function renderOverview(){
     if (name && !dkbById.has(name)) dkbById.set(name, r);
   });
   let dkbHealthList = [];
-  alignedAgents.forEach(ag => {
+  allAlignedAgents.forEach(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
     const dkbRow = dkbById.get(normVdi) || dkbById.get(normName) || null;
@@ -859,30 +854,30 @@ function renderOverview(){
   });
   const avgDkbHealth = dkbHealthList.length ? (dkbHealthList.reduce((a,b)=>a+b,0)/dkbHealthList.length) : 0;
 
-  // Render Dashboard Top Team KPI Cards
+  // Render Dashboard Top Team KPI Cards (Active + Inactive Combined)
   kpiCard(box, 'Total Audits', totalAudits.toLocaleString(), 'blue', '▤', `TL ${TARGET_TL_NAME}`);
   kpiCard(box, 'Pass Rate', totalAudits? pct(passRate) : '—', passRate>=0.85?'good':'bad', '✓', `${passCount}/${totalAudits} Passed`, passRate>=0.85?'good':'bad');
   kpiCard(box, 'Empathy Pass %', pct(empPct), empPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥', empPct>=EMPATHY_AGENT_TARGET?'Meets Target':'Below 88%', empPct>=EMPATHY_AGENT_TARGET?'good':'bad');
-  kpiCard(box, 'Avg AHT (Aligned)', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎', `Target ${AHT_TARGET}s`);
-  kpiCard(box, 'Avg CFS % (Aligned)', pct(avgCfs), avgCfs>=CFS_TARGET?'good':'bad', '☎', `Target ${pct(CFS_TARGET)}`);
-  kpiCard(box, 'Avg Adherence', pct(avgAdh), avgAdh>=0.9?'good':'warn', '◷', 'TL Aligned Average');
+  kpiCard(box, 'Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎', `Target ${AHT_TARGET}s`);
+  kpiCard(box, 'Avg CFS %', pct(avgCfs), avgCfs>=CFS_TARGET?'good':'bad', '☎', `Target ${pct(CFS_TARGET)}`);
+  kpiCard(box, 'Avg Adherence', pct(avgAdh), avgAdh>=0.9?'good':'warn', '◷', 'TL Team Average');
   kpiCard(box, 'Service Delivery', tlSdCount, 'good', '🚚', `TL ${TARGET_TL_NAME}`);
   kpiCard(box, 'Valid Escalation %', pct(validEscPct), 'purple', '⚑', `${totalValid}/${totalComp} Valid`);
-  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦', 'TL Aligned Average');
-  kpiCard(box, 'TL Alignment Count', tlAgentsCount, 'purple', '☺', TARGET_TL_NAME);
+  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦', 'TL Team Average');
+  kpiCard(box, 'TL Alignment Count', tlAgentsCount, 'purple', '☺', `${activeAlignedAgents.length} Active / ${tlAgentsCount} Total`);
 
-  // Leaderboard Tables
-  const rosterAggs = agentAggregates(true);
+  // Leaderboard Tables — ACTIVE AGENTS ONLY
+  const activeRosterAggs = agentAggregates(true, true);
 
   const topCeBody = document.getElementById('ovTopCeHolders'); topCeBody.innerHTML='';
-  const ceHolders = [...rosterAggs].filter(a => a.ceCount > 0).sort((a,b) => b.ceCount - a.ceCount);
+  const ceHolders = [...activeRosterAggs].filter(a => a.ceCount > 0).sort((a,b) => b.ceCount - a.ceCount);
   ceHolders.slice(0,8).forEach((a,i)=>{
     topCeBody.appendChild(el('tr',{},`<td>${i+1}</td><td>${a.agent}</td><td class="num cell-red">${a.ceCount}</td><td class="num">${a.total}</td>`));
   });
   if(topCeBody.children.length===0) topCeBody.appendChild(el('tr',{},`<td colspan="4" class="empty-note">No Critical Errors Found 🎉</td>`));
 
   const attentionBody = document.getElementById('ovAttention'); attentionBody.innerHTML='';
-  const belowTarget = rosterAggs.filter(a=>a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET).sort((a,b)=>a.empPct-b.empPct);
+  const belowTarget = activeRosterAggs.filter(a=>a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET).sort((a,b)=>a.empPct-b.empPct);
   belowTarget.slice(0,8).forEach((a,i)=>{
     const shortfall = EMPATHY_AGENT_TARGET - a.empPct;
     attentionBody.appendChild(el('tr',{},`<td>${i+1}</td><td>${a.agent}</td><td class="num">${pct(a.empPct)}</td><td class="num cell-red">-${pct(shortfall)}</td>`));
@@ -890,20 +885,22 @@ function renderOverview(){
   if(attentionBody.children.length===0) attentionBody.appendChild(el('tr',{},`<td colspan="4" class="empty-note">All meet empathy target 🎉</td>`));
 
   const top5EmpathyBody = document.getElementById('ovTop5Empathy'); top5EmpathyBody.innerHTML='';
-  [...rosterAggs].filter(a=>a.empPct!==null).sort((a,b)=>b.empPct-a.empPct).slice(0,5).forEach((a,i)=>{
+  [...activeRosterAggs].filter(a=>a.empPct!==null).sort((a,b)=>b.empPct-a.empPct).slice(0,5).forEach((a,i)=>{
     top5EmpathyBody.appendChild(el('tr',{},`<td>${i+1}</td><td>${a.agent}</td><td class="num">${pct(a.empPct)}</td>`));
   });
   if(top5EmpathyBody.children.length===0) top5EmpathyBody.appendChild(el('tr',{},`<td colspan="3" class="empty-note">No data available</td>`));
 
+  const activeTlOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
+
   const top5CfsBody = document.getElementById('ovTop5Cfs'); top5CfsBody.innerHTML='';
-  [...tlOrt].filter(r=>normPct(getRowVal(r, ['CFS%','CFS']))!==null).sort((a,b)=>normPct(getRowVal(b, ['CFS%','CFS']))-normPct(getRowVal(a, ['CFS%','CFS']))).slice(0,5).forEach((r,i)=>{
+  [...activeTlOrt].filter(r=>normPct(getRowVal(r, ['CFS%','CFS']))!==null).sort((a,b)=>normPct(getRowVal(b, ['CFS%','CFS']))-normPct(getRowVal(a, ['CFS%','CFS']))).slice(0,5).forEach((r,i)=>{
     const name = getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']);
     top5CfsBody.appendChild(el('tr',{},`<td>${i+1}</td><td>${name}</td><td class="num">${pct(normPct(getRowVal(r, ['CFS%','CFS'])))}</td>`));
   });
   if(top5CfsBody.children.length===0) top5CfsBody.appendChild(el('tr',{},`<td colspan="3" class="empty-note">No data available</td>`));
 
   const top5AhtBody = document.getElementById('ovTop5Aht'); top5AhtBody.innerHTML='';
-  [...tlOrt].filter(r=>numOf(getRowVal(r, ['AHT']))>0).sort((a,b)=>numOf(getRowVal(a, ['AHT']))-numOf(getRowVal(b, ['AHT']))).slice(0,5).forEach((r,i)=>{
+  [...activeTlOrt].filter(r=>numOf(getRowVal(r, ['AHT']))>0).sort((a,b)=>numOf(getRowVal(a, ['AHT']))-numOf(getRowVal(b, ['AHT']))).slice(0,5).forEach((r,i)=>{
     const name = getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']);
     top5AhtBody.appendChild(el('tr',{},`<td>${i+1}</td><td>${name}</td><td class="num">${numOf(getRowVal(r, ['AHT'])).toFixed(1)}</td>`));
   });
@@ -915,32 +912,32 @@ function populateAgentSelect(){
   const sel = document.getElementById('agentSelect');
   if (!sel) return;
   const current = sel.value;
-  const rosterAggs = agentAggregates(true);
-  const names = rosterAggs.map(a=>a.agent).sort();
-  sel.innerHTML = '<option value="">All Roster Agents</option>' + names.map(n=>`<option value="${n}">${n}</option>`).join('');
+  const activeRosterAggs = agentAggregates(true, true);
+  const names = activeRosterAggs.map(a=>a.agent).sort();
+  sel.innerHTML = '<option value="">All Active Roster Agents</option>' + names.map(n=>`<option value="${n}">${n}</option>`).join('');
   if(names.includes(current)) sel.value = current;
 }
 
 function renderAgentPage(){
-  const allAggs = agentAggregates(false);
-  const rosterAggs = agentAggregates(true); 
+  const allAlignedAggs = agentAggregates(true, false); 
+  const activeRosterAggs = agentAggregates(true, true); 
   const selected = document.getElementById('agentSelect').value;
   const spotlight = document.getElementById('agentSpotlight');
 
   const box = document.getElementById('kpiAgent'); box.innerHTML='';
-  const totalAudits = allAggs.reduce((s,a)=>s+a.total,0);
-  const totalFail = allAggs.reduce((s,a)=>s+a.fail,0);
-  const teamEp = allAggs.reduce((s,a)=>s+a.ep,0), teamEf = allAggs.reduce((s,a)=>s+a.ef,0);
+  const totalAudits = allAlignedAggs.reduce((s,a)=>s+a.total,0);
+  const totalFail = allAlignedAggs.reduce((s,a)=>s+a.fail,0);
+  const teamEp = allAlignedAggs.reduce((s,a)=>s+a.ep,0), teamEf = allAlignedAggs.reduce((s,a)=>s+a.ef,0);
   const teamEmpPct = (teamEp+teamEf)>0 ? teamEp/(teamEp+teamEf) : 0;
-  const belowTarget = rosterAggs.filter(a=>a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET).length;
+  const belowTarget = activeRosterAggs.filter(a=>a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET).length;
 
-  kpiCard(box, 'Total Audits (All)', totalAudits, 'blue', '▤', 'All Sheet Agents');
-  kpiCard(box, 'Overall Fail %', totalAudits? pct(totalFail/totalAudits):'—', 'bad', '✕', 'All Sheet Agents');
+  kpiCard(box, 'Total Audits (TL Team)', totalAudits, 'blue', '▤', `TL ${TARGET_TL_NAME}`);
+  kpiCard(box, 'Overall Fail %', totalAudits? pct(totalFail/totalAudits):'—', 'bad', '✕', 'TL Aligned Total');
   kpiCard(box, 'Overall Empathy %', pct(teamEmpPct), teamEmpPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥', teamEmpPct>=EMPATHY_AGENT_TARGET?'Meets Target':'Below Target');
-  kpiCard(box, 'TL Below Target', belowTarget, belowTarget>0?'warn':'good', '⚑', `Out of ${rosterAggs.length} TL Agents`);
+  kpiCard(box, 'TL Below Target (Active)', belowTarget, belowTarget>0?'warn':'good', '⚑', `Out of ${activeRosterAggs.length} Active Agents`);
 
   if(selected){
-    const a = rosterAggs.find(x=>x.agent===selected);
+    const a = activeRosterAggs.find(x=>x.agent===selected);
     if(a){
       spotlight.style.display='flex';
       const shortfall = a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET ? EMPATHY_AGENT_TARGET-a.empPct : 0;
@@ -957,9 +954,9 @@ function renderAgentPage(){
   } else { spotlight.style.display='none'; }
 
   const tbody = document.getElementById('agentTable'); tbody.innerHTML='';
-  const rowsToShow = selected ? rosterAggs.filter(a=>a.agent===selected) : rosterAggs;
+  const rowsToShow = selected ? activeRosterAggs.filter(a=>a.agent===selected) : activeRosterAggs;
   if(rowsToShow.length===0){ 
-    tbody.appendChild(el('tr',{},`<td colspan="9" class="empty-note">No roster agents matched.</td>`)); 
+    tbody.appendChild(el('tr',{},`<td colspan="9" class="empty-note">No active roster agents matched.</td>`)); 
     return; 
   }
   [...rowsToShow].sort((a,b)=>(a.empPct??1)-(b.empPct??1)).forEach(a=>{
@@ -1028,9 +1025,17 @@ function renderEmpathyPage(){
   const params = getEmpathyParameters(rows[0]);
   const vdiMap = getVdiToNameMap();
 
+  // Cards calculate across TL Aligned Agents (Active + Inactive)
+  const tlEmpathyRowsAll = rows.filter(r => {
+    const vdi = getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']);
+    const name = getRowVal(r, ['Agent Name', 'Name', 'Agent']);
+    return isRosterAgent(name, vdi, false);
+  });
+  const rowsForParamCalc = tlEmpathyRowsAll.length > 0 ? tlEmpathyRowsAll : rows;
+
   params.forEach(param => {
     let wsum = 0, csum = 0;
-    rows.forEach(r => {
+    rowsForParamCalc.forEach(r => {
       const rawAudit = getRowVal(r, ['Audit Count', 'Audits', 'Count', 'Total Audits']);
       const audit = (rawAudit !== '' && !isNaN(parseFloat(rawAudit))) ? parseFloat(rawAudit) : 1;
       const val = normPct(r[param.actualKey] !== undefined ? r[param.actualKey] : getRowVal(r, [param.label]));
@@ -1058,18 +1063,19 @@ function renderEmpathyPage(){
   const body = document.getElementById('empathyMatrixBody'); 
   body.innerHTML = '';
 
-  const rosterEmpathy = rows.filter(r => {
+  // Table Matrix: ACTIVE AGENTS ONLY
+  const activeRosterEmpathy = rows.filter(r => {
     const vdi = getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']);
     const name = getRowVal(r, ['Agent Name', 'Name', 'Agent']);
-    return isRosterAgent(name, vdi);
+    return isRosterAgent(name, vdi, true);
   });
 
-  if (rosterEmpathy.length === 0) {
-    body.appendChild(el('tr', {}, `<td colspan="${params.length + 3}" class="empty-note">No roster agents matched in Empathywise data.</td>`));
+  if (activeRosterEmpathy.length === 0) {
+    body.appendChild(el('tr', {}, `<td colspan="${params.length + 3}" class="empty-note">No active roster agents matched in Empathywise data.</td>`));
     return;
   }
 
-  rosterEmpathy.forEach(r => {
+  activeRosterEmpathy.forEach(r => {
     const vdi = getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']) || '—';
     let name = getRowVal(r, ['Agent Name', 'Name', 'Agent']) || '';
     if (!name && vdi !== '—') name = vdiMap.get(normalizeName(vdi)) || '—';
@@ -1093,44 +1099,56 @@ function renderEmpathyPage(){
 
 // ---------- ADHERENCE & BREAK PAGE ----------
 function renderAdherencePage(){
-  const allOrt = DATA.ort;
+  // Summary Grid strictly calculates for Alignment Sheet Agents (Active + Inactive)
+  const tlOrtAll = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
+
   const box = document.getElementById('kpiAdherence'); box.innerHTML='';
 
-  const adherenceVals = allOrt.map(r=>normPct(getRowVal(r, ['Adherence%','Adherence', 'Adherence Percent']))).filter(v=>v!==null);
+  const adherenceVals = tlOrtAll.map(r=>normPct(getRowVal(r, ['Adherence%','Adherence', 'Adherence Percent']))).filter(v=>v!==null);
   const avgAdherence = adherenceVals.length ? adherenceVals.reduce((a,b)=>a+b,0)/adherenceVals.length : 0;
-  const overBreakCount = allOrt.filter(r=>parseDurationHours(getRowVal(r, ['Extra Break', 'Over Break', 'Break Over', 'OverBreak'])) > 0).length;
-  const totalLagHours = allOrt.reduce((s,r)=>s + parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime'])), 0);
+  const overBreakCount = tlOrtAll.filter(r=>parseDurationHours(getRowVal(r, ['Extra Break', 'Over Break', 'Break Over', 'OverBreak'])) > 0).length;
+  const totalLagHours = tlOrtAll.reduce((s,r)=>s + parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime'])), 0);
 
-  const alignedAgents = getAlignmentAgents(TARGET_TL_NAME);
+  const allAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, false);
+  const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
+
   const sdByVdi = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID', 'User ID'])));
   const sdByName = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name'])));
 
   let totalTlSdCount = 0;
-  const agentSdList = alignedAgents.map(ag => {
+  allAlignedAgents.forEach(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
     let sdRows = [];
     if (normVdi && sdByVdi.has(normVdi)) sdRows = sdByVdi.get(normVdi);
     else if (normName && sdByName.has(normName)) sdRows = sdByName.get(normName);
-    const count = sdRows.length;
-    totalTlSdCount += count;
-    return { name: ag.name, vdi: ag.vdi, sdCount: count };
+    totalTlSdCount += sdRows.length;
   });
 
-  kpiCard(box, 'Team Avg Adherence', pct(avgAdherence), avgAdherence>=0.9?'good':'warn', '◷', `All Sheet Agents`);
-  kpiCard(box, 'Agents with Over Break', overBreakCount, overBreakCount>0?'warn':'good', '⚠', `All Sheet Agents`);
-  kpiCard(box, 'Total Lag Hours', totalLagHours.toFixed(1)+'h', 'bad', '⏳', 'All Sheet Agents Sum');
+  kpiCard(box, 'Team Avg Adherence', pct(avgAdherence), avgAdherence>=0.9?'good':'warn', '◷', `TL Aligned Agents`);
+  kpiCard(box, 'Agents with Over Break', overBreakCount, overBreakCount>0?'warn':'good', '⚠', `TL Aligned Agents`);
+  kpiCard(box, 'Total Lag Hours', totalLagHours.toFixed(1)+'h', 'bad', '⏳', 'TL Aligned Sum');
   kpiCard(box, 'Service Delivery Count', totalTlSdCount, 'good', '🚚', `TL ${TARGET_TL_NAME}`);
 
+  // Tables — ACTIVE ALIGNED AGENTS ONLY
+  const agentSdList = activeAlignedAgents.map(ag => {
+    const normVdi = normalizeName(ag.vdi);
+    const normName = normalizeName(ag.name);
+    let sdRows = [];
+    if (normVdi && sdByVdi.has(normVdi)) sdRows = sdByVdi.get(normVdi);
+    else if (normName && sdByName.has(normName)) sdRows = sdByName.get(normName);
+    return { name: ag.name, vdi: ag.vdi, sdCount: sdRows.length };
+  });
+
   const ortMap = new Map();
-  allOrt.forEach(r => {
+  DATA.ort.forEach(r => {
     const vdi = normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID']));
     const name = normalizeName(getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']));
     if (vdi) ortMap.set('vdi_' + vdi, r);
     if (name) ortMap.set('name_' + name, r);
   });
 
-  const matchedAdherenceRows = alignedAgents.map(ag => {
+  const matchedAdherenceRows = activeAlignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
     
@@ -1144,7 +1162,7 @@ function renderAdherencePage(){
 
   const tbodyA = document.getElementById('adherenceTable'); tbodyA.innerHTML='';
   if(matchedAdherenceRows.length===0){
-    tbodyA.appendChild(el('tr',{},`<td colspan="5" class="empty-note">No alignment agents found for TL ${TARGET_TL_NAME}.</td>`));
+    tbodyA.appendChild(el('tr',{},`<td colspan="5" class="empty-note">No active alignment agents found for TL ${TARGET_TL_NAME}.</td>`));
   } else {
     matchedAdherenceRows.sort((a,b)=>(a.adh??1)-(b.adh??1)).forEach(r=>{
       tbodyA.appendChild(el('tr',{}, `
@@ -1159,7 +1177,7 @@ function renderAdherencePage(){
 
   const tbodySD = document.getElementById('sdTable'); tbodySD.innerHTML='';
   if(agentSdList.length===0){
-    tbodySD.appendChild(el('tr',{},`<td colspan="3" class="empty-note">No Service Delivery data found for alignment agents.</td>`));
+    tbodySD.appendChild(el('tr',{},`<td colspan="3" class="empty-note">No Service Delivery data found for active alignment agents.</td>`));
   } else {
     agentSdList.sort((a,b)=>b.sdCount - a.sdCount).forEach(r=>{
       tbodySD.appendChild(el('tr',{}, `
@@ -1173,29 +1191,31 @@ function renderAdherencePage(){
 
 // ---------- AHT & CFS PAGE ----------
 function renderAhtCfsPage(){
-  const allOrt = DATA.ort;
+  // Summary Grid strictly calculates for Alignment Sheet Agents (Active + Inactive)
+  const tlOrtAll = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
   const box = document.getElementById('kpiAhtCfs'); box.innerHTML='';
 
-  const ahtVals = allOrt.map(r=>numOf(getRowVal(r, ['AHT']))).filter(v=>v>0);
+  const ahtVals = tlOrtAll.map(r=>numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec']))).filter(v=>v>0);
   const avgAht = ahtVals.length ? ahtVals.reduce((a,b)=>a+b,0)/ahtVals.length : 0;
-  const cfsVals = allOrt.map(r=>normPct(getRowVal(r, ['CFS%','CFS']))).filter(v=>v!==null);
+  const cfsVals = tlOrtAll.map(r=>normPct(getRowVal(r, ['CFS%','CFS', 'CFS Percent']))).filter(v=>v!==null);
   const avgCfs = cfsVals.length ? cfsVals.reduce((a,b)=>a+b,0)/cfsVals.length : 0;
-  const ahtMeeting = allOrt.filter(r=>{ const v=numOf(getRowVal(r, ['AHT'])); return v>0 && v<=AHT_TARGET; }).length;
-  const cfsMeeting = allOrt.filter(r=>{ const v=normPct(getRowVal(r, ['CFS%','CFS'])); return v!==null && v>=CFS_TARGET; }).length;
+  const ahtMeeting = tlOrtAll.filter(r=>{ const v=numOf(getRowVal(r, ['AHT'])); return v>0 && v<=AHT_TARGET; }).length;
+  const cfsMeeting = tlOrtAll.filter(r=>{ const v=normPct(getRowVal(r, ['CFS%','CFS'])); return v!==null && v>=CFS_TARGET; }).length;
 
-  kpiCard(box, 'Team Avg AHT', avgAht.toFixed(1)+'s', 'blue', '◎', `Target ${AHT_TARGET}s (All Sheet Agents)`);
-  kpiCard(box, 'AHT Target Met', `${ahtMeeting}/${allOrt.length}`, ahtMeeting===allOrt.length?'good':'warn', '✓', 'All Sheet Agents');
-  kpiCard(box, 'Team Avg CFS', pct(avgCfs), avgCfs>=CFS_TARGET?'good':'bad', '☎', `Target ${pct(CFS_TARGET)} (All Sheet Agents)`);
-  kpiCard(box, 'CFS Target Met', `${cfsMeeting}/${cfsVals.length}`, cfsMeeting===cfsVals.length?'good':'warn', '✓', 'All Sheet Agents');
+  kpiCard(box, 'Team Avg AHT', avgAht.toFixed(1)+'s', 'blue', '◎', `Target ${AHT_TARGET}s (TL Aligned Agents)`);
+  kpiCard(box, 'AHT Target Met', `${ahtMeeting}/${tlOrtAll.length}`, ahtMeeting===tlOrtAll.length?'good':'warn', '✓', 'TL Aligned Agents');
+  kpiCard(box, 'Team Avg CFS', pct(avgCfs), avgCfs>=CFS_TARGET?'good':'bad', '☎', `Target ${pct(CFS_TARGET)} (TL Aligned Agents)`);
+  kpiCard(box, 'CFS Target Met', `${cfsMeeting}/${cfsVals.length}`, cfsMeeting===cfsVals.length?'good':'warn', '✓', 'TL Aligned Agents');
 
-  const rosterOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID'])));
+  // Table — ACTIVE ALIGNED AGENTS ONLY
+  const activeTlOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
 
   const tbody = document.getElementById('ahtCfsTable'); tbody.innerHTML='';
-  if(rosterOrt.length===0){
-    tbody.appendChild(el('tr',{},`<td colspan="5" class="empty-note">No roster agents matched in ORT tab.</td>`));
+  if(activeTlOrt.length===0){
+    tbody.appendChild(el('tr',{},`<td colspan="5" class="empty-note">No active roster agents matched in ORT tab.</td>`));
     return;
   }
-  rosterOrt.forEach(r=>{
+  activeTlOrt.forEach(r=>{
     const name = getRowVal(r, ['Name', 'Agent Name', 'Agent']);
     const aht = numOf(getRowVal(r, ['AHT']));
     const cfs = normPct(getRowVal(r, ['CFS%','CFS']));
@@ -1214,7 +1234,8 @@ function renderAhtCfsPage(){
 
 // ---------- COMPLAINT & DKB PAGE ----------
 function renderComplaintPage(){
-  const alignedAgents = getAlignmentAgents(TARGET_TL_NAME);
+  const allAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, false);
+  const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
   const box = document.getElementById('kpiComplaint'); box.innerHTML='';
 
   const complaintByVdi = groupBy(DATA.complaint, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID'])));
@@ -1228,12 +1249,65 @@ function renderComplaintPage(){
     if (name && !dkbById.has(name)) dkbById.set(name, r);
   });
 
+  // KPI Summary Card Calculation across ALL Aligned Agents (Active + Inactive)
   let totalValidSum = 0;
   let totalInvalidSum = 0;
   let totalComplaintsSum = 0;
   let dkbHealthPercentages = [];
 
-  const agentComplaintData = alignedAgents.map(ag => {
+  allAlignedAgents.forEach(ag => {
+    const normVdi = normalizeName(ag.vdi);
+    const normName = normalizeName(ag.name);
+
+    let cRows = [];
+    if (normVdi && complaintByVdi.has(normVdi)) {
+      cRows = complaintByVdi.get(normVdi);
+    } else if (normName && complaintByName.has(normName)) {
+      cRows = complaintByName.get(normName);
+    }
+
+    cRows.forEach(r => {
+      const directValid = getRowVal(r, ['Valid', 'Valid Count', 'ValidComplaint']);
+      const directInvalid = getRowVal(r, ['Invalid', 'Invalid Count', 'InvalidComplaint']);
+
+      if (directValid !== '' && !isNaN(parseFloat(directValid)) && directInvalid !== '' && !isNaN(parseFloat(directInvalid))) {
+        totalValidSum += parseFloat(directValid);
+        totalInvalidSum += parseFloat(directInvalid);
+      } else {
+        const accuracyVal = String(getRowVal(r, [
+          'EscalationAccuracy', 'Escalation Accuracy', 'Escalation_Accuracy', 
+          'Accuracy', 'Validity', 'Status', 'Complaint Status', 'Valid/Invalid', 'Result'
+        ])).trim().toLowerCase();
+
+        if (accuracyVal === 'valid' || accuracyVal === '1' || accuracyVal === 'yes' || accuracyVal === 'pass') {
+          totalValidSum++;
+        } else if (accuracyVal === 'invalid' || accuracyVal === '0' || accuracyVal === 'no' || accuracyVal === 'fail') {
+          totalInvalidSum++;
+        } else if (accuracyVal.includes('valid') && !accuracyVal.includes('invalid')) {
+          totalValidSum++;
+        } else if (accuracyVal.includes('invalid')) {
+          totalInvalidSum++;
+        }
+      }
+    });
+
+    const dkbRow = dkbById.get(normVdi) || dkbById.get(normName) || null;
+    const dkbHealthPct = dkbRow ? normPct(getRowVal(dkbRow, ['Health %', 'Health%', 'Health', 'DKB Attendance', 'Present %', 'DKB Present %', 'DKB %', 'Present'])) : null;
+    if (dkbHealthPct !== null) dkbHealthPercentages.push(dkbHealthPct);
+  });
+
+  totalComplaintsSum = totalValidSum + totalInvalidSum;
+  const avgValidEscPct = totalComplaintsSum > 0 ? (totalValidSum / totalComplaintsSum) : 0;
+  const avgDkbHealth = dkbHealthPercentages.length ? (dkbHealthPercentages.reduce((a,b)=>a+b,0)/dkbHealthPercentages.length) : 0;
+
+  kpiCard(box, 'Total Complaints', totalComplaintsSum, 'bad', '⚠', `Mohammad Imam Hossain Team`);
+  kpiCard(box, 'Valid Count', totalValidSum, 'warn', '✓', `Total Valid Sum`);
+  kpiCard(box, 'Invalid Count', totalInvalidSum, 'good', '✕', `Total Invalid Sum`);
+  kpiCard(box, 'Team Valid Escalation %', pct(avgValidEscPct), 'purple', '⚑', `Valid / Total`);
+  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), 'blue', '▦', `Matched by ID`);
+
+  // Tables — ACTIVE ALIGNED AGENTS ONLY
+  const agentComplaintData = activeAlignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
 
@@ -1275,37 +1349,22 @@ function renderComplaintPage(){
     const totalComp = validCount + invalidCount;
     const validPct = totalComp > 0 ? (validCount / totalComp) : null;
 
-    totalValidSum += validCount;
-    totalInvalidSum += invalidCount;
-    totalComplaintsSum += totalComp;
-
     return { name: ag.name, vdi: ag.vdi, validCount, invalidCount, totalComp, validPct };
   });
 
-  const agentDkbData = alignedAgents.map(ag => {
+  const agentDkbData = activeAlignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
 
     const dkbRow = dkbById.get(normVdi) || dkbById.get(normName) || null;
     const dkbHealthPct = dkbRow ? normPct(getRowVal(dkbRow, ['Health %', 'Health%', 'Health', 'DKB Attendance', 'Present %', 'DKB Present %', 'DKB %', 'Present'])) : null;
 
-    if (dkbHealthPct !== null) dkbHealthPercentages.push(dkbHealthPct);
-
     return { name: ag.name, vdi: ag.vdi, dkbHealthPct };
   });
 
-  const avgValidEscPct = totalComplaintsSum > 0 ? (totalValidSum / totalComplaintsSum) : 0;
-  const avgDkbHealth = dkbHealthPercentages.length ? (dkbHealthPercentages.reduce((a,b)=>a+b,0)/dkbHealthPercentages.length) : 0;
-
-  kpiCard(box, 'Total Complaints', totalComplaintsSum, 'bad', '⚠', `Mohammad Imam Hossain Team`);
-  kpiCard(box, 'Valid Count', totalValidSum, 'warn', '✓', `Total Valid Sum`);
-  kpiCard(box, 'Invalid Count', totalInvalidSum, 'good', '✕', `Total Invalid Sum`);
-  kpiCard(box, 'Team Valid Escalation %', pct(avgValidEscPct), 'purple', '⚑', `Valid / Total`);
-  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), 'blue', '▦', `Matched by ID`);
-
   const tbodyC = document.getElementById('complaintTable'); tbodyC.innerHTML='';
   if (agentComplaintData.length === 0) {
-    tbodyC.appendChild(el('tr',{},`<td colspan="6" class="empty-note">No alignment agents found for Mohammad Imam Hossain.</td>`));
+    tbodyC.appendChild(el('tr',{},`<td colspan="6" class="empty-note">No active alignment agents found for Mohammad Imam Hossain.</td>`));
   } else {
     agentComplaintData.sort((a,b) => b.totalComp - a.totalComp).forEach(r => {
       tbodyC.appendChild(el('tr', {}, `
@@ -1321,7 +1380,7 @@ function renderComplaintPage(){
 
   const tbodyD = document.getElementById('dkbTable'); tbodyD.innerHTML='';
   if (agentDkbData.length === 0) {
-    tbodyD.appendChild(el('tr',{},`<td colspan="4" class="empty-note">No DKB Health data found for alignment agents.</td>`));
+    tbodyD.appendChild(el('tr',{},`<td colspan="4" class="empty-note">No DKB Health data found for active alignment agents.</td>`));
   } else {
     agentDkbData.sort((a,b) => (b.dkbHealthPct??0) - (a.dkbHealthPct??0)).forEach(r => {
       const isGood = r.dkbHealthPct !== null && r.dkbHealthPct >= 0.85;
@@ -1341,7 +1400,8 @@ function renderAuditLog(){
   const resFilter = document.getElementById('logResultFilter') ? document.getElementById('logResultFilter').value : '';
   const tbody = document.getElementById('auditLogTable'); tbody.innerHTML='';
   
-  const rosterAudits = DATA.agentAudits.filter(r => isRosterAgent(getRowVal(r, ['Agent Name', 'Agent', 'Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID'])));
+  // ACTIVE AGENTS ONLY
+  const rosterAudits = DATA.agentAudits.filter(r => isRosterAgent(getRowVal(r, ['Agent Name', 'Agent', 'Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
   
   const sorted = [...rosterAudits].sort((a,b)=>{
     const da = String(getRowVal(a, ['Eval Date', 'Date'])||'');
@@ -1383,19 +1443,19 @@ function exportCSV(){
   let cols, rowsData, filename;
   if(CURRENT_PAGE==='agent'){
     cols=['Agent','Audits','Pass','Fail','Fail%','Empathy Pass','Empathy Fail','Empathy%'];
-    rowsData = agentAggregates(true).map(a=>[a.agent,a.total,a.pass,a.fail,pct(a.failPct),a.ep,a.ef,a.empPct!==null?pct(a.empPct):'']);
+    rowsData = agentAggregates(true, true).map(a=>[a.agent,a.total,a.pass,a.fail,pct(a.failPct),a.ep,a.ef,a.empPct!==null?pct(a.empPct):'']);
     filename='agent_performance';
   } else if(CURRENT_PAGE==='adherence'){
     cols=['Agent Name','VDI ID','Adherence%','Over Break','Lag Hour'];
-    rowsData = getAlignmentAgents(TARGET_TL_NAME).map(ag=>[ag.name, ag.vdi, '','','']);
+    rowsData = getAlignmentAgents(TARGET_TL_NAME, true).map(ag=>[ag.name, ag.vdi, '','','']);
     filename='adherence_break';
   } else if(CURRENT_PAGE==='complaint'){
     cols=['Agent Name','VDI ID','Valid Count','Invalid Count','Total Complaint','Valid%'];
-    rowsData = getAlignmentAgents(TARGET_TL_NAME).map(ag=>[ag.name, ag.vdi, '0','0','0','0%']);
+    rowsData = getAlignmentAgents(TARGET_TL_NAME, true).map(ag=>[ag.name, ag.vdi, '0','0','0','0%']);
     filename='complaint_escalation';
   } else {
     cols=['Eval Date','Agent Name','QA','Skill','ANI','Topic','Result','Critical Error','RTC'];
-    rowsData = DATA.agentAudits.filter(r=>isRosterAgent(getRowVal(r, ['Agent Name', 'Agent'])))
+    rowsData = DATA.agentAudits.filter(r=>isRosterAgent(getRowVal(r, ['Agent Name', 'Agent']), getRowVal(r, ['VDI ID']), true))
       .map(r=>[getRowVal(r, ['Eval Date']),getRowVal(r, ['Agent Name']),getRowVal(r, ['QA']),getRowVal(r, ['Skill']),getRowVal(r, ['ANI']),getRowVal(r, ['Topic']),isPass(getRowVal(r, ['Pass or Fail']))?'Pass':'Fail',getRowVal(r, ['Critical Error']),getRowVal(r, ['RTC'])]);
     filename='audit_log';
   }
