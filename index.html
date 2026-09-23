@@ -304,7 +304,7 @@
     <!-- ============ OVERVIEW ============ -->
     <div class="page active" id="page-overview">
       <section>
-        <div class="section-head"><h2>Mohammad Imam Hossain — Team KPI Summary</h2><span class="hint">Direct IB Sheet &amp; TL ORT Sheet</span></div>
+        <div class="section-head"><h2>Mohammad Imam Hossain — Team KPI Summary</h2><span class="hint">Direct IB Sheet &amp; TL ORT Row</span></div>
         <div class="kpi-row" id="kpiOverview"></div>
       </section>
       <section>
@@ -415,7 +415,7 @@
     <!-- ============ AHT & CFS ============ -->
     <div class="page" id="page-ahtcfs">
       <section>
-        <div class="section-head"><h2>Team AHT &amp; CFS Summary</h2><span class="hint">TL ORT Sheet Metrics</span></div>
+        <div class="section-head"><h2>Team AHT &amp; CFS Summary</h2><span class="hint">TL ORT Metrics &amp; Aligned Target Met</span></div>
         <div class="kpi-row" id="kpiAhtCfs"></div>
       </section>
       <section>
@@ -584,54 +584,45 @@ function getRowsByTL(sheetData, targetTL) {
   });
 }
 
-// Function to read TL ORT sheet metrics for Mohammad Imam Hossain with fallback
+// Extract exact row for "Mohammad Imam Hossain" from "TL ORT" sheet
 function getTlOrtMetrics(targetTL) {
   const normTarget = normalizeName(targetTL);
   const tlOrtList = DATA.tlOrt || [];
-  let tlOrtRow = null;
+  let row = null;
   
   for (const r of tlOrtList) {
     const tl = String(getRowVal(r, ['Team Leader', 'TL', 'TL Name', 'Supervisor', 'TeamLeader', 'Name', 'Agent Name']) || '').trim();
     const normTL = normalizeName(tl);
     if (normTL.includes(normTarget) || normTarget.includes(normTL)) {
-      tlOrtRow = r;
+      row = r;
       break;
     }
   }
 
-  const ortRows = getRowsByTL(DATA.ort, targetTL);
+  let aht = 0, cfs = null, adh = null, lag = 0, overBreak = 0;
 
-  // 1. Avg AHT
-  let aht = tlOrtRow ? numOf(getRowVal(tlOrtRow, ['Avg AHT', 'AHT', 'Average AHT', 'AHT (sec)', 'AHT Sec'])) : 0;
-  if (!aht && ortRows.length > 0) {
-    const ahtVals = ortRows.map(r => numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec']))).filter(v => v > 0);
-    aht = ahtVals.length ? ahtVals.reduce((a, b) => a + b, 0) / ahtVals.length : 0;
-  }
+  if (row) {
+    aht = numOf(getRowVal(row, ['AHT', 'Avg AHT', 'Average AHT', 'AHT (sec)', 'AHT Sec']));
+    cfs = normPct(getRowVal(row, ['CFS', 'CFS %', 'Avg CFS %', 'Avg CFS', 'Average CFS']));
+    adh = normPct(getRowVal(row, ['Adherence', 'Adherence %', 'Avg Adherence', 'Avg Adherence %', 'Team Avg Adherence']));
+    lag = parseDurationHours(getRowVal(row, ['Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag']));
+    overBreak = numOf(getRowVal(row, ['Over Break', 'Agents with Over Break', 'Over Break Count', 'Extra Break']));
+  } else {
+    // Fallback if TL ORT row is unavailable
+    const ortRows = getRowsByTL(DATA.ort, targetTL);
+    if (ortRows.length > 0) {
+      const ahtVals = ortRows.map(r => numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec']))).filter(v => v > 0);
+      aht = ahtVals.length ? ahtVals.reduce((a, b) => a + b, 0) / ahtVals.length : 0;
 
-  // 2. Avg CFS %
-  let cfs = tlOrtRow ? normPct(getRowVal(tlOrtRow, ['Avg CFS %', 'Avg CFS', 'CFS %', 'CFS', 'Average CFS'])) : null;
-  if (cfs === null && ortRows.length > 0) {
-    const cfsVals = ortRows.map(r => normPct(getRowVal(r, ['CFS%', 'CFS', 'CFS Percent']))).filter(v => v !== null);
-    cfs = cfsVals.length ? cfsVals.reduce((a, b) => a + b, 0) / cfsVals.length : 0;
-  }
+      const cfsVals = ortRows.map(r => normPct(getRowVal(r, ['CFS%', 'CFS', 'CFS Percent']))).filter(v => v !== null);
+      cfs = cfsVals.length ? cfsVals.reduce((a, b) => a + b, 0) / cfsVals.length : 0;
 
-  // 3. Avg Adherence
-  let adh = tlOrtRow ? normPct(getRowVal(tlOrtRow, ['Avg Adherence', 'Avg Adherence %', 'Adherence %', 'Adherence', 'Team Avg Adherence'])) : null;
-  if (adh === null && ortRows.length > 0) {
-    const adhVals = ortRows.map(r => normPct(getRowVal(r, ['Adherence%', 'Adherence', 'Adherence Percent']))).filter(v => v !== null);
-    adh = adhVals.length ? adhVals.reduce((a, b) => a + b, 0) / adhVals.length : 0;
-  }
+      const adhVals = ortRows.map(r => normPct(getRowVal(r, ['Adherence%', 'Adherence', 'Adherence Percent']))).filter(v => v !== null);
+      adh = adhVals.length ? adhVals.reduce((a, b) => a + b, 0) / adhVals.length : 0;
 
-  // 4. Total Lag Hours
-  let lag = tlOrtRow ? parseDurationHours(getRowVal(tlOrtRow, ['Total Lag Hours', 'Lag Hours', 'Lag Time', 'Lag', 'Total Lag'])) : 0;
-  if (!lag && ortRows.length > 0) {
-    lag = ortRows.reduce((s, r) => s + parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime'])), 0);
-  }
-
-  // 5. Over Break Count
-  let overBreak = tlOrtRow ? numOf(getRowVal(tlOrtRow, ['Agents with Over Break', 'Over Break Count', 'Over Break', 'Extra Break'])) : 0;
-  if (!overBreak && ortRows.length > 0) {
-    overBreak = ortRows.filter(r => parseDurationHours(getRowVal(r, ['Extra Break', 'Over Break', 'Break Over', 'OverBreak'])) > 0).length;
+      lag = ortRows.reduce((s, r) => s + parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime'])), 0);
+      overBreak = ortRows.filter(r => parseDurationHours(getRowVal(r, ['Extra Break', 'Over Break', 'Break Over', 'OverBreak'])) > 0).length;
+    }
   }
 
   return { aht, cfs, adh, lag, overBreak };
@@ -916,9 +907,9 @@ function renderOverview(){
   kpiCard(box, 'Total Audits', totalAudits.toLocaleString(), 'blue', '▤', `TL ${TARGET_TL_NAME} (Direct IB)`);
   kpiCard(box, 'Pass Rate', totalAudits? pct(passRate) : '—', passRate>=0.85?'good':'bad', '✓', `${passCount}/${totalAudits} Passed`, passRate>=0.85?'good':'bad');
   kpiCard(box, 'Empathy Pass %', pct(empPct), empPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥', empPct>=EMPATHY_AGENT_TARGET?'Meets Target':'Below 88%', empPct>=EMPATHY_AGENT_TARGET?'good':'bad');
-  kpiCard(box, 'Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎', `Target ${AHT_TARGET}s (TL ORT Sheet)`);
-  kpiCard(box, 'Avg CFS %', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎', `Target ${pct(CFS_TARGET)} (TL ORT Sheet)`);
-  kpiCard(box, 'Avg Adherence', avgAdh!==null?pct(avgAdh):'—', (avgAdh!==null && avgAdh>=0.9)?'good':'warn', '◷', 'TL ORT Sheet');
+  kpiCard(box, 'Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎', `Target ${AHT_TARGET}s (TL ORT Row)`);
+  kpiCard(box, 'Avg CFS %', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎', `Target ${pct(CFS_TARGET)} (TL ORT Row)`);
+  kpiCard(box, 'Avg Adherence', avgAdh!==null?pct(avgAdh):'—', (avgAdh!==null && avgAdh>=0.9)?'good':'warn', '◷', 'TL ORT Row');
   kpiCard(box, 'Service Delivery', tlSdCount, 'good', '🚚', `TL ${TARGET_TL_NAME}`);
   kpiCard(box, 'Valid Escalation %', pct(validEscPct), 'purple', '⚑', `${totalValid}/${totalComp} Valid`);
   kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦', 'TL Team Average');
@@ -1159,7 +1150,7 @@ function renderEmpathyPage(){
 
 // ---------- ADHERENCE & BREAK PAGE ----------
 function renderAdherencePage(){
-  // Direct TL ORT Sheet calculation for Mohammad Imam Hossain
+  // Direct TL ORT Sheet row for Mohammad Imam Hossain
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
 
   const box = document.getElementById('kpiAdherence'); box.innerHTML='';
@@ -1257,22 +1248,19 @@ function renderAhtCfsPage(){
   const avgAht = tlOrtMetrics.aht;
   const avgCfs = tlOrtMetrics.cfs;
 
-  let tlOrtAll = getRowsByTL(DATA.ort, TARGET_TL_NAME);
-  if (tlOrtAll.length === 0) {
-    tlOrtAll = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
-  }
+  // Calculate AHT & CFS Target Met counts based strictly on ALIGNED AGENTS in ORT Sheet
+  const alignedOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
 
-  const ahtMeeting = tlOrtAll.filter(r=>{ const v=numOf(getRowVal(r, ['AHT'])); return v>0 && v<=AHT_TARGET; }).length;
-  const cfsMeeting = tlOrtAll.filter(r=>{ const v=normPct(getRowVal(r, ['CFS%','CFS'])); return v!==null && v>=CFS_TARGET; }).length;
+  const ahtMeeting = alignedOrt.filter(r => { const v = numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec'])); return v > 0 && v <= AHT_TARGET; }).length;
+  const totalAhtAligned = alignedOrt.filter(r => numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec'])) > 0).length || alignedOrt.length;
 
-  kpiCard(box, 'Team Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎', `Target ${AHT_TARGET}s (TL ORT Sheet)`);
-  kpiCard(box, 'AHT Target Met', `${ahtMeeting}/${tlOrtAll.length}`, ahtMeeting===tlOrtAll.length?'good':'warn', '✓', 'TL ORT Sheet');
-  kpiCard(box, 'Team Avg CFS', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎', `Target ${pct(CFS_TARGET)} (TL ORT Sheet)`);
-  kpiCard(box, 'CFS Target Met', `${cfsMeeting}/${cfsValsLength(tlOrtAll)}`, 'good', '✓', 'TL ORT Sheet');
+  const cfsMeeting = alignedOrt.filter(r => { const v = normPct(getRowVal(r, ['CFS%', 'CFS'])); return v !== null && v >= CFS_TARGET; }).length;
+  const totalCfsAligned = alignedOrt.filter(r => normPct(getRowVal(r, ['CFS%', 'CFS'])) !== null).length || alignedOrt.length;
 
-  function cfsValsLength(list) {
-    return list.map(r=>normPct(getRowVal(r, ['CFS%','CFS']))).filter(v=>v!==null).length || list.length;
-  }
+  kpiCard(box, 'Team Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎', `Target ${AHT_TARGET}s (TL ORT Row)`);
+  kpiCard(box, 'AHT Target Met', `${ahtMeeting}/${totalAhtAligned}`, ahtMeeting===totalAhtAligned?'good':'warn', '✓', 'Aligned Agents Count');
+  kpiCard(box, 'Team Avg CFS', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎', `Target ${pct(CFS_TARGET)} (TL ORT Row)`);
+  kpiCard(box, 'CFS Target Met', `${cfsMeeting}/${totalCfsAligned}`, cfsMeeting===totalCfsAligned?'good':'warn', '✓', 'Aligned Agents Count');
 
   // Table — ACTIVE ALIGNED AGENTS ONLY
   const activeTlOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
