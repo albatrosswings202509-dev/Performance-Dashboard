@@ -214,31 +214,31 @@
   .param-card:not(.red) .pval{color:var(--good);}
   .param-card .ptarget{font-size:10px; color:var(--muted-dim); margin-top:2px;}
 
-  /* PERFORMANCE CARD STYLES */
+  /* PERFORMANCE CARD STYLES (OPTIMIZED FOR EXACT 1 PAGE PDF) */
   #performanceCardContainer {
-    padding: 10px;
+    padding: 8px;
     background: var(--bg);
     border-radius: 12px;
   }
   .perf-header{
     background:linear-gradient(135deg, #16243f, #24345f);
-    border-radius:12px; padding:20px 24px; color:#fff; margin-bottom:20px;
-    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+    border-radius:10px; padding:12px 18px; color:#fff; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
   }
-  .perf-header .ph-title{font-size:20px; font-weight:800;}
-  .perf-header .ph-meta{font-size:12px; color:#aab2c5; margin-top:4px;}
+  .perf-header .ph-title{font-size:18px; font-weight:800;}
+  .perf-header .ph-meta{font-size:11px; color:#aab2c5; margin-top:2px;}
   .perf-grid{
-    display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;
   }
   .pmetric-card{
-    background:var(--card); border:1px solid var(--line); border-radius:10px;
-    padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;
+    background:var(--card); border:1px solid var(--line); border-radius:8px;
+    padding:10px 12px; display:flex; flex-direction:column; justify-content:space-between; gap:6px;
   }
   .pmetric-top{display:flex; justify-content:space-between; align-items:flex-start;}
-  .pmetric-label{font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;}
-  .pmetric-val{font-size:24px; font-weight:800; font-family:var(--mono); color:var(--ink);}
-  .pmetric-target{font-size:10.5px; font-weight:600; color:var(--muted-dim);}
-  .pmetric-status{display:inline-block; padding:3px 8px; border-radius:5px; font-size:10.5px; font-weight:700; width:fit-content;}
+  .pmetric-label{font-size:10.5px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.03em;}
+  .pmetric-val{font-size:20px; font-weight:800; font-family:var(--mono); color:var(--ink);}
+  .pmetric-target{font-size:10px; font-weight:600; color:var(--muted-dim);}
+  .pmetric-status{display:inline-block; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:700; width:fit-content;}
 
   table{width:100%; border-collapse:collapse; background:var(--card); font-size:12px;}
   thead th{
@@ -265,7 +265,6 @@
 
   @media (max-width: 1280px) {
     .kpi-row{grid-template-columns: repeat(3, 1fr);}
-    .perf-grid{grid-template-columns: repeat(2, 1fr);}
   }
   @media (max-width: 900px) {
     #empathyParamCards { grid-template-columns: repeat(2, 1fr); }
@@ -1292,7 +1291,7 @@ function renderPerformanceCard(){
   `;
 }
 
-// EXACT COLORFUL PDF DOWNLOAD FUNCTION USING HTML2PDF
+// EXACT 1-PAGE PDF DOWNLOAD FUNCTION
 function downloadPerformanceCardPDF() {
   const sel = document.getElementById('agentCardSelect');
   const agentName = sel ? sel.value : '';
@@ -1304,11 +1303,12 @@ function downloadPerformanceCardPDF() {
   const element = document.getElementById('performanceCardContainer');
   
   const opt = {
-    margin:       [0.2, 0.2, 0.2, 0.2],
+    margin:       [0.1, 0.1, 0.1, 0.1],
     filename:     `${agentName.replace(/\s+/g, '_')}_Performance_Card.pdf`,
     image:        { type: 'jpeg', quality: 0.98 },
     html2canvas:  { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#f4f6fa' },
-    jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+    pagebreak:    { mode: 'avoid-all' }
   };
 
   html2pdf().set(opt).from(element).save();
