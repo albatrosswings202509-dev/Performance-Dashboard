@@ -225,7 +225,7 @@
   tbody td{padding:8.5px 10px; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums; text-align:center;}
   tbody tr:hover{background:#fafbfd;}
   .table-wrap{
-    max-height:480px; overflow-y:auto; overflow-x:auto; border:1px solid var(--line);
+    max-height:720px; overflow-y:auto; overflow-x:auto; border:1px solid var(--line);
     border-radius:10px; -webkit-overflow-scrolling:touch;
   }
   .num{font-family:var(--mono);}
@@ -516,7 +516,7 @@
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwqP0zUv4fkXolnAUwmDQqETL-ELpsPg8ZYixLNdiPOoICpY5Gh-uEmuc_ZCnSbRCXk/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyhyZbXUt8pCnIbHU_-X4afrbRJYzuU_YLNj5vmd3T8Iy_sXiTOJ-CGzREbpwBuF-Yo/exec";
 const REFRESH_INTERVAL_MS = 30000;
 const TARGET_TL_NAME = "Mohammad Imam Hossain"; // Permanently Hardcoded
 const EMPATHY_AGENT_TARGET = 0.88;   
@@ -648,8 +648,8 @@ function getTlOrtMetrics(targetTL) {
     cfs = normPct(getRowVal(row, ['CFS %', 'CFS', 'Avg CFS %', 'Avg CFS', 'Average CFS', 'CFS Percent', 'CFS%']));
     adh = normPct(getRowVal(row, ['Adherence %', 'Adherence', 'Avg Adherence', 'Avg Adherence %', 'Team Avg Adherence', 'Adherence%']));
     
-    // LAG TIME EXTRACTION DIRECT FROM TL ORT ROW
-    rawLagVal = getRowVal(row, ['Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag', 'LagTime', 'Lag Hour(s)', 'Lag (Hours)', 'Total Lag']);
+    // LAG TIME EXTRACTION DIRECT FROM COLUMN H / TL ORT ROW
+    rawLagVal = getRowVal(row, ['H', 'Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag', 'LagTime', 'Lag Hour(s)', 'Lag (Hours)', 'Total Lag']);
     lag = parseDurationHours(rawLagVal);
 
     // OVER BREAK EXTRACTION
@@ -1238,10 +1238,15 @@ function renderAdherencePage(){
     totalTlSdCount += sdRows.length;
   });
 
-  // Lag Hour exact display from TL ORT row
+  // Lag Hour exact display from TL ORT row (Shows exact string like "148:57:31")
   let displayLag = '—';
   if (rawLagVal !== '' && rawLagVal !== null && rawLagVal !== undefined) {
-    displayLag = String(rawLagVal).includes(':') ? String(rawLagVal) : fmtHoursMin(totalLagHours);
+    const strLag = String(rawLagVal).trim();
+    if (strLag.includes(':')) {
+      displayLag = strLag.includes(' ') ? strLag.split(' ').pop() : strLag;
+    } else {
+      displayLag = fmtHoursMin(totalLagHours);
+    }
   } else if (totalLagHours > 0) {
     displayLag = fmtHoursMin(totalLagHours);
   }
