@@ -132,7 +132,6 @@
     padding:6px 10px; border-radius:6px; font-size:16px; cursor:pointer; color:var(--ink);
   }
   .topbar h1{font-size:17px; font-weight:700; margin:0; color:var(--ink);}
-  .topbar .page-sub{font-size:11.5px; color:var(--muted); margin-top:1px;}
   .status-cluster{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted); flex-wrap:wrap;}
 
   .live-chip{
@@ -165,10 +164,9 @@
   .filterbar label{font-size:10.5px; color:var(--muted-dim); font-weight:600;}
   .filterbar select, .filterbar input[type=text]{
     background:#fff; color:var(--ink); border:1px solid var(--line);
-    border-radius:7px; padding:7.5px 10px; font-family:var(--sans); font-size:12px; min-width:150px;
+    border-radius:7px; padding:7.5px 10px; font-family:var(--sans); font-size:12px; min-width:180px;
   }
 
-  /* RESPONSIVE CARD GRID — 5 CARDS PER ROW FOR 10 CARDS */
   .kpi-row{
     display:grid;
     grid-template-columns: repeat(5, 1fr);
@@ -191,13 +189,10 @@
   .kpi-card .kpi-label{font-size:11px; color:var(--muted); font-weight:600; line-height:1.2;}
   .kpi-card .kpi-num{font-size:22px; font-weight:800; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; color:var(--ink);}
   .kpi-card .kpi-sub{font-size:10px; color:var(--muted-dim);}
-  .kpi-card .kpi-sub.good{color:var(--good);}
-  .kpi-card .kpi-sub.bad{color:var(--bad);}
 
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
 
-  /* EMPATHY PARAMETER GRID — EXACT 4 CARDS PER ROW */
   #empathyParamCards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -214,6 +209,27 @@
   .param-card.red .pval{color:var(--bad);}
   .param-card:not(.red) .pval{color:var(--good);}
   .param-card .ptarget{font-size:10px; color:var(--muted-dim); margin-top:2px;}
+
+  /* PERFORMANCE CARD STYLES */
+  .perf-header{
+    background:linear-gradient(135deg, #16243f, #24345f);
+    border-radius:12px; padding:20px 24px; color:#fff; margin-bottom:20px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+  }
+  .perf-header .ph-title{font-size:20px; font-weight:800;}
+  .perf-header .ph-meta{font-size:12px; color:#aab2c5; margin-top:4px;}
+  .perf-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;
+  }
+  .pmetric-card{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;
+  }
+  .pmetric-top{display:flex; justify-content:space-between; align-items:flex-start;}
+  .pmetric-label{font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;}
+  .pmetric-val{font-size:24px; font-weight:800; font-family:var(--mono); color:var(--ink);}
+  .pmetric-target{font-size:10.5px; font-weight:600; color:var(--muted-dim);}
+  .pmetric-status{display:inline-block; padding:3px 8px; border-radius:5px; font-size:10.5px; font-weight:700; width:fit-content;}
 
   table{width:100%; border-collapse:collapse; background:var(--card); font-size:12px;}
   thead th{
@@ -238,19 +254,9 @@
   .empty-note{padding:25px; text-align:center; color:var(--muted-dim); font-size:12.5px;}
   footer{text-align:center; padding:20px; font-size:11px; color:var(--muted-dim); font-family:var(--mono);}
 
-  .spotlight{
-    background:linear-gradient(135deg, #16243f, #24345f);
-    border-radius:12px; padding:18px 22px; color:#fff; margin-bottom:18px;
-    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;
-  }
-  .spotlight .sp-name{font-size:18px; font-weight:800;}
-  .spotlight .sp-sub{font-size:11.5px; color:#aab2c5; margin-top:2px;}
-  .spotlight-metrics{display:flex; gap:22px; flex-wrap:wrap;}
-  .spotlight-metrics .sm-val{font-size:20px; font-weight:800; font-family:var(--mono);}
-  .spotlight-metrics .sm-label{font-size:10px; color:#aab2c5; margin-top:2px;}
-
   @media (max-width: 1280px) {
     .kpi-row{grid-template-columns: repeat(3, 1fr);}
+    .perf-grid{grid-template-columns: repeat(2, 1fr);}
   }
   @media (max-width: 900px) {
     #empathyParamCards { grid-template-columns: repeat(2, 1fr); }
@@ -269,9 +275,7 @@
     main{padding:16px 14px 40px;}
     .grid-2, .grid-3{grid-template-columns:1fr;}
     .kpi-row{grid-template-columns:repeat(2, 1fr); gap:10px;}
-    .kpi-card{padding:12px;}
-    .kpi-card .kpi-num{font-size:18px;}
-    .spotlight{flex-direction:column; align-items:flex-start;}
+    .perf-grid{grid-template-columns: 1fr;}
   }
   @media (max-width: 500px) {
     .kpi-row{grid-template-columns:1fr;}
@@ -294,6 +298,7 @@
     </div>
     <div class="sidebar-nav">
       <div class="nav-item active" data-page="overview" onclick="setPage('overview')"><span class="ic">▤</span>Dashboard</div>
+      <div class="nav-item" data-page="card" onclick="setPage('card')"><span class="ic">🪪</span>Performance Card</div>
       <div class="nav-item" data-page="agent" onclick="setPage('agent')"><span class="ic">☺</span>Audit Report</div>
       <div class="nav-item" data-page="empathy" onclick="setPage('empathy')"><span class="ic">♥</span>Empathy Analysis</div>
       <div class="nav-item" data-page="adherence" onclick="setPage('adherence')"><span class="ic">◷</span>Adherence &amp; Break</div>
@@ -360,12 +365,25 @@
       </section>
     </div>
 
+    <!-- ============ PERFORMANCE CARD SHEET ============ -->
+    <div class="page" id="page-card">
+      <div class="filterbar">
+        <div class="fgroup">
+          <label>Select Active Agent</label>
+          <select id="agentCardSelect" onchange="renderPerformanceCard()">
+            <option value="">-- Choose Agent --</option>
+          </select>
+        </div>
+      </div>
+      <div id="performanceCardContainer">
+        <div class="empty-note" style="background:#fff; border-radius:10px; border:1px solid var(--line); margin-top:10px;">
+          Please select an agent from the dropdown above to view their consolidated Performance Card.
+        </div>
+      </div>
+    </div>
+
     <!-- ============ AUDIT REPORT ============ -->
     <div class="page" id="page-agent">
-      <div class="filterbar">
-        <div class="fgroup"><label>Filter Agent (Active)</label><select id="agentSelect" onchange="renderAgentPage()"><option value="">All Active Roster Agents</option></select></div>
-      </div>
-      <div class="spotlight" id="agentSpotlight" style="display:none;"></div>
       <section>
         <div class="section-head"><h2>Team Audit Summary</h2></div>
         <div class="kpi-row" id="kpiAgent"></div>
@@ -517,11 +535,15 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbxtJz-7EUEkTiQelUwTajpjst3atRoamGmM6PhcJs5T8V-mOLk2Ci6AWlbiQzxvDRAO/exec";
 const REFRESH_INTERVAL_MS = 30000;
 const TARGET_TL_NAME = "Mohammad Imam Hossain"; // Permanently Hardcoded
-const EMPATHY_AGENT_TARGET = 0.88;   
-const EMPATHY_PARAM_TARGET = 0.875;  
-const AHT_TARGET = 170;              
-const CFS_TARGET = 0.90;
-const MONTHLY_CFS_TARGET = 0.905; // 90.50%
+
+// SPECIFIED TARGETS
+const FAIL_TARGET = 0.00;            // 0.00%
+const EMPATHY_AGENT_TARGET = 0.88;   // 88.0%
+const EMPATHY_PARAM_TARGET = 0.875;  // 87.5%
+const AHT_TARGET = 170;              // 170s
+const CFS_TARGET = 0.90;             // 90.0%
+const ESCALATION_ACCURACY_TARGET = 0.95; // 95.0%
+const MONTHLY_CFS_TARGET = 0.905;    // 90.50%
 
 let DATA = { agentAudits: [], empathyWise: [], ort: [], tlOrt: [], alignment: [], complaint: [], dkb: [], serviceDelivery: [] };
 
@@ -555,14 +577,13 @@ function getRowVal(row, possibleKeys) {
 
 function normPct(v){
   if(v === null || v === undefined || v === '') return null;
-  if(typeof v === 'string' && v.trim().toUpperCase() === 'NA') return null;
+  if(typeof v === 'string' && (v.trim().toUpperCase() === 'NA' || v.trim().toUpperCase() === 'N/A')) return null;
   if(typeof v === 'string' && v.includes('%')) return parseFloat(v.replace('%','')) / 100;
   const n = parseFloat(v);
   if(isNaN(n)) return null;
   return n > 1 ? n / 100 : n; 
 }
 
-// Robust Duration Parser for Lag Hours & Over Break
 function parseDurationHours(v){
   if(v === null || v === undefined || v === '') return 0;
   if(typeof v === 'number') return v;
@@ -614,7 +635,6 @@ function getRowsByTL(sheetData, targetTL) {
   });
 }
 
-// Extract exact row for Mohammad Imam Hossain from "TL ORT" sheet with exact Lag Time & Over Break
 function getTlOrtMetrics(targetTL) {
   const normTarget = normalizeName(targetTL);
   const tlOrtList = DATA.tlOrt || [];
@@ -646,11 +666,9 @@ function getTlOrtMetrics(targetTL) {
     cfs = normPct(getRowVal(row, ['CFS %', 'CFS', 'Avg CFS %', 'Avg CFS', 'Average CFS', 'CFS Percent', 'CFS%']));
     adh = normPct(getRowVal(row, ['Adherence %', 'Adherence', 'Avg Adherence', 'Avg Adherence %', 'Team Avg Adherence', 'Adherence%']));
     
-    // LAG TIME EXTRACTION DIRECT FROM COLUMN H / TL ORT ROW
     rawLagVal = getRowVal(row, ['H', 'Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag', 'LagTime', 'Lag Hour(s)', 'Lag (Hours)', 'Total Lag']);
     lag = parseDurationHours(rawLagVal);
 
-    // OVER BREAK EXTRACTION
     const rawOb = getRowVal(row, ['Agents with Over Break', 'Over Break', 'Over Break Count', 'Extra Break', 'OverBreak', 'Break Over']);
     if (rawOb !== '' && rawOb !== null && rawOb !== undefined) {
       const strOb = String(rawOb).trim();
@@ -714,7 +732,6 @@ function processPayload(json) {
   };
 }
 
-// ---------- ROSTER & ALIGNMENT HELPERS ----------
 function getAlignmentAgents(tlNameFilter = null, activeOnly = false) {
   const list = [];
   (DATA.alignment || []).forEach(row => {
@@ -766,7 +783,6 @@ function getVdiToNameMap() {
   return map;
 }
 
-// ---------- DATA LOADING ----------
 async function loadData(manual=false){
   const btn = document.getElementById('refreshBtn');
   const chip = document.getElementById('liveChip');
@@ -797,6 +813,7 @@ function toggleMobileSidebar(){ document.body.classList.toggle('sidebar-open'); 
 
 const PAGE_META = {
   overview:   {title:'Dashboard Overview'},
+  card:       {title:'Performance Card'},
   agent:      {title:'Audit Report'},
   empathy:    {title:'Empathy Analysis'},
   adherence:  {title:'Adherence & Break'},
@@ -813,7 +830,6 @@ function setPage(name){
   document.getElementById('page-'+name).classList.add('active');
   document.querySelector(`.nav-item[data-page="${name}"]`).classList.add('active');
   document.getElementById('pageTitle').textContent = PAGE_META[name].title;
-  if(document.getElementById('pageSub')) document.getElementById('pageSub').textContent = PAGE_META[name].sub || '';
   document.body.classList.remove('sidebar-open');
   renderCurrentPage();
 }
@@ -825,8 +841,9 @@ function renderCurrentPage(){
     document.getElementById('footerNote').textContent =
       `${DATA.agentAudits.length} Audits · ${DATA.ort.length} ORT Rows · ${DATA.complaint.length} Complaints · ${DATA.alignment.length} Alignment Roster`;
   }
-  populateAgentSelect();
+  populateAgentCardSelect();
   if(CURRENT_PAGE==='overview') renderOverview();
+  if(CURRENT_PAGE==='card') renderPerformanceCard();
   if(CURRENT_PAGE==='agent') renderAgentPage();
   if(CURRENT_PAGE==='empathy') renderEmpathyPage();
   if(CURRENT_PAGE==='adherence') renderAdherencePage();
@@ -843,7 +860,6 @@ function kpiCard(container, label, value, iconClass, icon, sub='', subClass=''){
   `));
 }
 
-// ---------- AGGREGATION ----------
 function agentAggregates(onlyRoster=false, activeOnly=true){
   const byAgent = groupBy(DATA.agentAudits, r => String(getRowVal(r, ['Agent Name', 'Agent', 'Name']) || 'Unknown').trim());
   const out = [];
@@ -856,7 +872,6 @@ function agentAggregates(onlyRoster=false, activeOnly=true){
     const pass = rows.filter(r=>isPass(getRowVal(r, ['Pass or Fail', 'Result', 'Pass/Fail']))).length;
     const fail = total - pass;
 
-    // RTC Accuracy from Column EJ of IB agent wise sheet
     const rtcPass = rows.filter(r => isRtcPass(getRowVal(r, ['EJ', 'RTC Accuracy', 'RTC Status', 'RTC']))).length;
     const rtcPct = total ? (rtcPass / total) : null;
     
@@ -878,7 +893,6 @@ function renderOverview(){
   const box = document.getElementById('kpiOverview'); box.innerHTML='';
   
   const allAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, false);
-  const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
   const tlAgentsCount = allAlignedAgents.length;
 
   let tlAudits = getRowsByTL(DATA.agentAudits, TARGET_TL_NAME);
@@ -959,7 +973,6 @@ function renderOverview(){
   });
   const avgDkbHealth = dkbHealthList.length ? (dkbHealthList.reduce((a,b)=>a+b,0)/dkbHealthList.length) : 0;
 
-  // Render Dashboard Overview 10 KPI Cards
   kpiCard(box, 'Total Audits', totalAudits.toLocaleString(), 'blue', '▤');
   kpiCard(box, 'Pass Rate', totalAudits? pct(passRate) : '—', passRate>=0.85?'good':'bad', '✓');
   kpiCard(box, 'Empathy Pass %', pct(empPct), empPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥');
@@ -1012,21 +1025,263 @@ function renderOverview(){
   if(top5AhtBody.children.length===0) top5AhtBody.appendChild(el('tr',{},`<td colspan="3" class="empty-note">No data available</td>`));
 }
 
-// ---------- AUDIT REPORT PAGE ----------
-function populateAgentSelect(){
-  const sel = document.getElementById('agentSelect');
+// ---------- PERFORMANCE CARD PAGE LOGIC ----------
+function populateAgentCardSelect(){
+  const sel = document.getElementById('agentCardSelect');
   if (!sel) return;
   const current = sel.value;
-  const activeRosterAggs = agentAggregates(true, true);
-  const names = activeRosterAggs.map(a=>a.agent).sort();
-  sel.innerHTML = '<option value="">All Active Roster Agents</option>' + names.map(n=>`<option value="${n}">${n}</option>`).join('');
-  if(names.includes(current)) sel.value = current;
+  const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
+  const sortedNames = activeAlignedAgents.map(a=>a.name).filter(Boolean).sort();
+  sel.innerHTML = '<option value="">-- Choose Agent --</option>' + sortedNames.map(n=>`<option value="${n}">${n}</option>`).join('');
+  if(sortedNames.includes(current)) sel.value = current;
 }
 
+function renderPerformanceCard(){
+  const sel = document.getElementById('agentCardSelect');
+  const container = document.getElementById('performanceCardContainer');
+  if(!sel || !container) return;
+
+  const agentName = sel.value;
+  if(!agentName){
+    container.innerHTML = `
+      <div class="empty-note" style="background:#fff; border-radius:10px; border:1px solid var(--line); margin-top:10px;">
+        Please select an agent from the dropdown above to view their consolidated Performance Card.
+      </div>`;
+    return;
+  }
+
+  const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
+  const agentObj = activeAlignedAgents.find(a => normalizeName(a.name) === normalizeName(agentName)) || { name: agentName, vdi: '—' };
+  const normAgent = normalizeName(agentObj.name);
+  const normVdi = normalizeName(agentObj.vdi);
+
+  // 1. AUDIT DATA
+  const activeRosterAggs = agentAggregates(true, true);
+  const auditAgg = activeRosterAggs.find(a => normalizeName(a.agent) === normAgent) || { total:0, pass:0, fail:0, failPct:0, rtcPct:null, ep:0, ef:0, empPct:null, ceCount:0 };
+
+  // 2. ORT DATA (AHT, CFS, Adherence, Over Break, Lag Hour)
+  let ortRow = DATA.ort.find(r => {
+    const rVdi = normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID']));
+    const rName = normalizeName(getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']));
+    return (normVdi && rVdi === normVdi) || (normAgent && rName === normAgent);
+  });
+
+  const aht = ortRow ? numOf(getRowVal(ortRow, ['AHT', 'AHT (sec)', 'AHT Sec'])) : 0;
+  const rawCfsVal = ortRow ? getRowVal(ortRow, ['CFS%', 'CFS', 'CFS Percent']) : null;
+  const cfs = normPct(rawCfsVal);
+  const hasCfs = (cfs !== null && rawCfsVal !== '' && String(rawCfsVal).trim().toUpperCase() !== 'N/A' && String(rawCfsVal).trim().toUpperCase() !== 'NA');
+  
+  const adh = ortRow ? normPct(getRowVal(ortRow, ['Adherence%', 'Adherence'])) : null;
+  const overBreakHours = ortRow ? parseDurationHours(getRowVal(ortRow, ['Extra Break', 'Over Break', 'Break Over', 'OverBreak'])) : 0;
+  const lagHours = ortRow ? parseDurationHours(getRowVal(ortRow, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime', 'Total Lag Hours'])) : 0;
+
+  // 3. COMPLAINT & ESCALATION DATA
+  const cRows = DATA.complaint.filter(r => {
+    const rVdi = normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID']));
+    const rName = normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name']));
+    return (normVdi && rVdi === normVdi) || (normAgent && rName === normAgent);
+  });
+
+  let validCount = 0, invalidCount = 0;
+  cRows.forEach(r => {
+    const directValid = getRowVal(r, ['Valid', 'Valid Count', 'ValidComplaint']);
+    const directInvalid = getRowVal(r, ['Invalid', 'Invalid Count', 'InvalidComplaint']);
+    if (directValid !== '' && !isNaN(parseFloat(directValid)) && directInvalid !== '' && !isNaN(parseFloat(directInvalid))) {
+      validCount += parseFloat(directValid);
+      invalidCount += parseFloat(directInvalid);
+    } else {
+      const accuracyVal = String(getRowVal(r, ['EscalationAccuracy', 'Escalation Accuracy', 'Accuracy', 'Validity', 'Status', 'Result'])).trim().toLowerCase();
+      if (accuracyVal === 'valid' || accuracyVal === '1' || accuracyVal === 'yes' || accuracyVal === 'pass') validCount++;
+      else if (accuracyVal === 'invalid' || accuracyVal === '0' || accuracyVal === 'no' || accuracyVal === 'fail') invalidCount++;
+      else if (accuracyVal.includes('valid') && !accuracyVal.includes('invalid')) validCount++;
+      else if (accuracyVal.includes('invalid')) invalidCount++;
+    }
+  });
+  const totalEscalations = validCount + invalidCount;
+  const escAccuracyPct = totalEscalations > 0 ? (validCount / totalEscalations) : null;
+
+  // 4. DKB DATA
+  const dkbRow = DATA.dkb.find(r => {
+    const rVdi = normalizeName(getRowVal(r, ['ID', 'VDI ID', 'VDI', 'Emp ID', 'Employee ID', 'User ID']));
+    const rName = normalizeName(getRowVal(r, ['Name', 'Agent Name', 'Agent', 'Employee Name']));
+    return (normVdi && rVdi === normVdi) || (normAgent && rName === normAgent);
+  });
+  const dkbHealthPct = dkbRow ? normPct(getRowVal(dkbRow, ['Health %', 'Health%', 'Health', 'DKB Attendance', 'Present %', 'DKB %'])) : null;
+
+  // 5. SERVICE DELIVERY DATA
+  const sdRows = DATA.serviceDelivery.filter(r => {
+    const rVdi = normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID', 'User ID']));
+    const rName = normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name']));
+    return (normVdi && rVdi === normVdi) || (normAgent && rName === normAgent);
+  });
+  const sdCount = sdRows.length;
+
+  // STATUS HELPER FOR CARDS
+  const isFailMet = auditAgg.failPct <= FAIL_TARGET;
+  const isEmpathyMet = auditAgg.empPct !== null && auditAgg.empPct >= EMPATHY_AGENT_TARGET;
+  const isAhtMet = aht > 0 && aht <= AHT_TARGET;
+  const isCfsMet = cfs !== null && cfs >= CFS_TARGET;
+  const isEscMet = escAccuracyPct !== null && escAccuracyPct >= ESCALATION_ACCURACY_TARGET;
+
+  container.innerHTML = `
+    <div class="perf-header">
+      <div>
+        <div class="ph-title">${agentObj.name}</div>
+        <div class="ph-meta">VDI ID: ${agentObj.vdi || '—'} &nbsp;|&nbsp; Team Leader: ${TARGET_TL_NAME} &nbsp;|&nbsp; Total Audits: ${auditAgg.total}</div>
+      </div>
+    </div>
+
+    <div class="perf-grid">
+      <!-- AUDIT FAIL % CARD -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Audit Fail %</div>
+            <div class="pmetric-val">${auditAgg.total > 0 ? pct(auditAgg.failPct) : '—'}</div>
+          </div>
+          <span class="pmetric-status ${isFailMet ? 'pill good' : 'pill bad'}">${isFailMet ? 'Target Met' : 'Target Missed'}</span>
+        </div>
+        <div class="pmetric-target">Target: 0.00% &nbsp;|&nbsp; Pass: ${auditAgg.pass} / Fail: ${auditAgg.fail}</div>
+      </div>
+
+      <!-- EMPATHY % CARD -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Empathy %</div>
+            <div class="pmetric-val">${auditAgg.empPct !== null ? pct(auditAgg.empPct) : '—'}</div>
+          </div>
+          <span class="pmetric-status ${isEmpathyMet ? 'pill good' : 'pill bad'}">${isEmpathyMet ? 'Target Met' : 'Target Missed'}</span>
+        </div>
+        <div class="pmetric-target">Target: 88.0% &nbsp;|&nbsp; Pass: ${auditAgg.ep} / Fail: ${auditAgg.ef}</div>
+      </div>
+
+      <!-- AHT CARD -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Average AHT</div>
+            <div class="pmetric-val">${aht > 0 ? aht.toFixed(1) + 's' : '—'}</div>
+          </div>
+          <span class="pmetric-status ${isAhtMet ? 'pill good' : 'pill bad'}">${isAhtMet ? 'Target Met' : 'Target Missed'}</span>
+        </div>
+        <div class="pmetric-target">Target: 170s ${aht > AHT_TARGET ? `(-${(aht - AHT_TARGET).toFixed(1)}s)` : ''}</div>
+      </div>
+
+      <!-- CFS % CARD (HIDDEN IF N/A) -->
+      ${hasCfs ? `
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">CFS %</div>
+            <div class="pmetric-val">${pct(cfs)}</div>
+          </div>
+          <span class="pmetric-status ${isCfsMet ? 'pill good' : 'pill bad'}">${isCfsMet ? 'Target Met' : 'Target Missed'}</span>
+        </div>
+        <div class="pmetric-target">Target: 90.0%</div>
+      </div>
+      ` : ''}
+
+      <!-- COMPLAINT ESCALATION ACCURACY CARD -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Escalation Accuracy %</div>
+            <div class="pmetric-val">${escAccuracyPct !== null ? pct(escAccuracyPct) : '—'}</div>
+          </div>
+          <span class="pmetric-status ${isEscMet ? 'pill good' : 'pill bad'}">${isEscMet ? 'Target Met' : 'Target Missed'}</span>
+        </div>
+        <div class="pmetric-target">Target: 95.0% &nbsp;|&nbsp; Valid: ${validCount} / Total: ${totalEscalations}</div>
+      </div>
+
+      <!-- OVER BREAK CARD -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Over Break</div>
+            <div class="pmetric-val">${fmtHoursMin(overBreakHours)}</div>
+          </div>
+          <span class="pmetric-status ${overBreakHours > 0 ? 'pill bad' : 'pill good'}">${overBreakHours > 0 ? 'Over Break Recorded' : 'Normal'}</span>
+        </div>
+        <div class="pmetric-target">Extra Break Duration</div>
+      </div>
+
+      <!-- LAG HOUR CARD -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Lag Hour</div>
+            <div class="pmetric-val">${fmtHoursMin(lagHours)}</div>
+          </div>
+          <span class="pmetric-status ${lagHours > 0 ? 'pill warn' : 'pill good'}">${lagHours > 0 ? 'Lag Hours Recorded' : 'No Lag'}</span>
+        </div>
+        <div class="pmetric-target">Total Lag Time</div>
+      </div>
+
+      <!-- ADHERENCE % CARD -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Adherence %</div>
+            <div class="pmetric-val">${adh !== null ? pct(adh) : '—'}</div>
+          </div>
+          <span class="pmetric-status ${adh !== null && adh >= 0.90 ? 'pill good' : 'pill warn'}">${adh !== null && adh >= 0.90 ? 'Good' : 'Needs Improvement'}</span>
+        </div>
+        <div class="pmetric-target">Target: 90.0%</div>
+      </div>
+
+      <!-- DKB HEALTH % CARD -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">DKB %</div>
+            <div class="pmetric-val">${dkbHealthPct !== null ? pct(dkbHealthPct) : '—'}</div>
+          </div>
+          <span class="pmetric-status ${dkbHealthPct !== null && dkbHealthPct >= 0.85 ? 'pill good' : 'pill warn'}">${dkbHealthPct !== null && dkbHealthPct >= 0.85 ? 'Good' : 'Needs Improvement'}</span>
+        </div>
+        <div class="pmetric-target">DKB Health Status</div>
+      </div>
+
+      <!-- SERVICE DELIVERY & CRITICAL ERROR SUMMARY -->
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Service Delivery (SD)</div>
+            <div class="pmetric-val">${sdCount}</div>
+          </div>
+          <span class="pmetric-status pill good">Total Delivered</span>
+        </div>
+        <div class="pmetric-target">Total SD Count</div>
+      </div>
+
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">Critical Error (CE) Count</div>
+            <div class="pmetric-val ${auditAgg.ceCount > 0 ? 'cell-red' : ''}">${auditAgg.ceCount}</div>
+          </div>
+          <span class="pmetric-status ${auditAgg.ceCount > 0 ? 'pill bad' : 'pill good'}">${auditAgg.ceCount > 0 ? 'CE Found' : 'Zero CE'}</span>
+        </div>
+        <div class="pmetric-target">Target: 0 Critical Errors</div>
+      </div>
+
+      <div class="pmetric-card">
+        <div class="pmetric-top">
+          <div>
+            <div class="pmetric-label">RTC Accuracy %</div>
+            <div class="pmetric-val">${auditAgg.rtcPct !== null ? pct(auditAgg.rtcPct) : '—'}</div>
+          </div>
+          <span class="pmetric-status ${auditAgg.rtcPct !== null && auditAgg.rtcPct >= 0.90 ? 'pill good' : 'pill warn'}">${auditAgg.rtcPct !== null && auditAgg.rtcPct >= 0.90 ? 'High Accuracy' : 'Review'}</span>
+        </div>
+        <div class="pmetric-target">RTC Verification Status</div>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- AUDIT REPORT PAGE ----------
 function renderAgentPage(){
   const activeRosterAggs = agentAggregates(true, true); 
-  const selected = document.getElementById('agentSelect').value;
-  const spotlight = document.getElementById('agentSpotlight');
 
   let tlAudits = getRowsByTL(DATA.agentAudits, TARGET_TL_NAME);
   if (tlAudits.length === 0) {
@@ -1038,7 +1293,6 @@ function renderAgentPage(){
   const totalPass = tlAudits.filter(r=>isPass(getRowVal(r, ['Pass or Fail', 'Result', 'Pass/Fail']))).length;
   const totalFail = totalAudits - totalPass;
 
-  // TEAM RTC ACCURACY CALCULATION FROM COLUMN EJ OF IB AGENT WISE SHEET
   const teamRtcPass = tlAudits.filter(r => isRtcPass(getRowVal(r, ['EJ', 'RTC Accuracy', 'RTC Status', 'RTC']))).length;
   const teamRtcPct = totalAudits ? (teamRtcPass / totalAudits) : 0;
 
@@ -1053,30 +1307,12 @@ function renderAgentPage(){
   kpiCard(box, 'Overall Empathy %', pct(teamEmpPct), teamEmpPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥');
   kpiCard(box, 'TL Below Target (Active)', belowTarget, belowTarget>0?'warn':'good', '⚑');
 
-  if(selected){
-    const a = activeRosterAggs.find(x=>x.agent===selected);
-    if(a){
-      spotlight.style.display='flex';
-      const shortfall = a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET ? EMPATHY_AGENT_TARGET-a.empPct : 0;
-      spotlight.innerHTML = `
-        <div><div class="sp-name">${a.agent}</div><div class="sp-sub">${a.total} Audits Evaluated</div></div>
-        <div class="spotlight-metrics">
-          <div><div class="sm-val">${a.pass}</div><div class="sm-label">PASS</div></div>
-          <div><div class="sm-val">${a.fail}</div><div class="sm-label">FAIL</div></div>
-          <div><div class="sm-val">${a.rtcPct!==null?pct(a.rtcPct):'—'}</div><div class="sm-label">RTC ACCURACY</div></div>
-          <div><div class="sm-val">${a.empPct!==null?pct(a.empPct):'—'}</div><div class="sm-label">EMPATHY %</div></div>
-          <div><div class="sm-val" style="color:${shortfall>0?'#f0a5a0':'#7de3b0'}">${shortfall>0?'-'+pct(shortfall):'Target Met'}</div><div class="sm-label">VS 88% TARGET</div></div>
-        </div>`;
-    } else { spotlight.style.display='none'; }
-  } else { spotlight.style.display='none'; }
-
   const tbody = document.getElementById('agentTable'); tbody.innerHTML='';
-  const rowsToShow = selected ? activeRosterAggs.filter(a=>a.agent===selected) : activeRosterAggs;
-  if(rowsToShow.length===0){ 
+  if(activeRosterAggs.length===0){ 
     tbody.appendChild(el('tr',{},`<td colspan="10" class="empty-note">No active roster agents matched.</td>`)); 
     return; 
   }
-  [...rowsToShow].sort((a,b)=>(a.empPct??1)-(b.empPct??1)).forEach(a=>{
+  [...activeRosterAggs].sort((a,b)=>(a.empPct??1)-(b.empPct??1)).forEach(a=>{
     const shortfall = a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET ? EMPATHY_AGENT_TARGET-a.empPct : 0;
     tbody.appendChild(el('tr',{}, `
       <td>${a.agent}</td>
@@ -1093,7 +1329,7 @@ function renderAgentPage(){
   });
 }
 
-// ---------- EMPATHY ANALYSIS PAGE (UNTOUCHED KPI CARDS) ----------
+// ---------- EMPATHY ANALYSIS PAGE ----------
 function getEmpathyParameters(sampleRow) {
   const definedParams = [
     { label: 'Warm Greetings', keys: ['Warm Greetings', 'Warm Greeting', 'Greetings', '1.1 Warm Greetings'] },
@@ -1236,7 +1472,6 @@ function renderAdherencePage(){
     totalTlSdCount += sdRows.length;
   });
 
-  // Lag Hour exact display from TL ORT row (Shows exact string like "148:57:31")
   let displayLag = '—';
   if (rawLagVal !== '' && rawLagVal !== null && rawLagVal !== undefined) {
     const strLag = String(rawLagVal).trim();
@@ -1254,7 +1489,6 @@ function renderAdherencePage(){
   kpiCard(box, 'Total Lag Hours', displayLag, 'bad', '⏳');
   kpiCard(box, 'Service Delivery Count', totalTlSdCount, 'good', '🚚');
 
-  // Tables
   const agentSdList = activeAlignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
@@ -1321,7 +1555,6 @@ function renderAhtCfsPage(){
   const avgAht = tlOrtMetrics.aht;
   const avgCfs = tlOrtMetrics.cfs;
 
-  // DRR % ESTIMATED CALCULATION (Daily 100 estimated CFS responses to reach 90.50% Target)
   const dailyVol = 100;
   const now = new Date();
   const totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -1354,7 +1587,6 @@ function renderAhtCfsPage(){
   kpiCard(box, 'CFS Target Met', `${cfsMeeting}/${totalCfsAligned}`, cfsMeeting===totalCfsAligned?'good':'warn', '✓');
   kpiCard(box, 'DRR % (CFS)', pct(drrVal), (drrVal <= MONTHLY_CFS_TARGET)?'good':'bad', '📈');
 
-  // Table — ACTIVE ALIGNED AGENTS ONLY
   const activeTlOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
 
   const tbody = document.getElementById('ahtCfsTable'); tbody.innerHTML='';
@@ -1365,7 +1597,8 @@ function renderAhtCfsPage(){
   activeTlOrt.forEach(r=>{
     const name = getRowVal(r, ['Name', 'Agent Name', 'Agent']);
     const aht = numOf(getRowVal(r, ['AHT']));
-    const cfs = normPct(getRowVal(r, ['CFS%','CFS']));
+    const rawCfsVal = getRowVal(r, ['CFS%','CFS']);
+    const cfs = normPct(rawCfsVal);
     const ahtMet = aht>0 && aht<=AHT_TARGET;
     const ahtExcess = ahtMet ? 0 : aht-AHT_TARGET;
     const cfsMet = cfs!==null && cfs>=CFS_TARGET;
@@ -1374,7 +1607,7 @@ function renderAhtCfsPage(){
       <td class="num">${aht?aht.toFixed(1):'—'}</td>
       <td>${aht ? (ahtMet ? '<span class="pill good">Target Met</span>' : `<span class="pill bad">Reduce by ${ahtExcess.toFixed(1)}s</span>`) : '—'}</td>
       <td class="num">${cfs!==null?pct(cfs):'—'}</td>
-      <td>${cfs!==null ? (cfsMet ? '<span class="pill good">Target Met</span>' : `<span class="pill bad">-${pct(CFS_TARGET-cfs)}</span>`) : 'NA'}</td>
+      <td>${cfs!==null ? (cfsMet ? '<span class="pill good">Target Met</span>' : `<span class="pill bad">-${pct(CFS_TARGET-cfs)}</span>`) : 'N/A'}</td>
     `));
   });
 }
@@ -1452,7 +1685,6 @@ function renderComplaintPage(){
   kpiCard(box, 'Valid Escalation %', pct(avgValidEscPct), 'purple', '⚑');
   kpiCard(box, 'DKB %', pct(avgDkbHealth), 'blue', '▦');
 
-  // Tables
   const agentComplaintData = activeAlignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
