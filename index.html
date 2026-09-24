@@ -970,7 +970,7 @@ function renderOverview(){
   kpiCard(box, 'Avg Adherence', avgAdh!==null?pct(avgAdh):'—', (avgAdh!==null && avgAdh>=0.9)?'good':'warn', '◷', '');
   kpiCard(box, 'Service Delivery', tlSdCount, 'good', '🚚', ``);
   kpiCard(box, 'Valid Escalation %', pct(validEscPct), 'purple', '⚑', `${totalValid}/${totalComp} Valid`);
-  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦', '');
+  kpiCard(box, 'DKB %', pct(dkbPct), dkbPct >= 0.85 ? 'good' : 'warn', '▦', '');
   kpiCard(box, 'TL Alignment Count', tlAgentsCount, 'purple', '☺', `${activeAlignedAgents.length} Active / ${tlAgentsCount} Total`);
 
   // Leaderboard Tables
@@ -1448,11 +1448,11 @@ function renderComplaintPage(){
   const avgValidEscPct = totalComplaintsSum > 0 ? (totalValidSum / totalComplaintsSum) : 0;
   const avgDkbHealth = dkbHealthPercentages.length ? (dkbHealthPercentages.reduce((a,b)=>a+b,0)/dkbHealthPercentages.length) : 0;
 
-  kpiCard(box, 'Total Complaints', totalComplaintsSum, 'bad', '⚠', `${}`);
-  kpiCard(box, 'Valid Count', totalValidSum, 'warn', '✓', ``);
-  kpiCard(box, 'Invalid Count', totalInvalidSum, 'good', '✕', ``);
+  kpiCard(box, 'Total Complaints', totalComplaintsSum, 'bad', '⚠', `TL ${TARGET_TL_NAME}`);
+  kpiCard(box, 'Valid Count', totalValidSum, 'warn', '✓', `Total Valid Sum`);
+  kpiCard(box, 'Invalid Count', totalInvalidSum, 'good', '✕', `Total Invalid Sum`);
   kpiCard(box, 'Team Valid Escalation %', pct(avgValidEscPct), 'purple', '⚑', `Valid / Total`);
-  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), 'blue', '▦', ``);
+  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), 'blue', '▦', `Matched by ID`);
 
   // Tables
   const agentComplaintData = activeAlignedAgents.map(ag => {
