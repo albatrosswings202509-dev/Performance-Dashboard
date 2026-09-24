@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Albatross Wings — Performance Dashboard</title>
+
+<!-- html2pdf Library for exact visual PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <style>
   :root{
     --navy:#101d34;
@@ -159,7 +163,7 @@
   .section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:6px;}
   .section-head h2{font-size:15px; font-weight:700; margin:0; color:var(--ink);}
 
-  .filterbar{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px;}
+  .filterbar{display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px;}
   .filterbar .fgroup{display:flex; flex-direction:column; gap:4px;}
   .filterbar label{font-size:10.5px; color:var(--muted-dim); font-weight:600;}
   .filterbar select, .filterbar input[type=text]{
@@ -211,6 +215,11 @@
   .param-card .ptarget{font-size:10px; color:var(--muted-dim); margin-top:2px;}
 
   /* PERFORMANCE CARD STYLES */
+  #performanceCardContainer {
+    padding: 10px;
+    background: var(--bg);
+    border-radius: 12px;
+  }
   .perf-header{
     background:linear-gradient(135deg, #16243f, #24345f);
     border-radius:12px; padding:20px 24px; color:#fff; margin-bottom:20px;
@@ -493,6 +502,9 @@
             <option value="">-- Choose Agent --</option>
           </select>
         </div>
+        <button id="downloadPdfBtn" onclick="downloadPerformanceCardPDF()" style="background:var(--purple); color:#fff; border:none; padding:7.5px 14px; font-size:12px; font-weight:600; border-radius:7px; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          📥 Download PDF
+        </button>
       </div>
       <div id="performanceCardContainer">
         <div class="empty-note" style="background:#fff; border-radius:10px; border:1px solid var(--line); margin-top:10px;">
@@ -1026,7 +1038,7 @@ function renderOverview(){
   if(top5AhtBody.children.length===0) top5AhtBody.appendChild(el('tr',{},`<td colspan="3" class="empty-note">No data available</td>`));
 }
 
-// ---------- PERFORMANCE CARD PAGE LOGIC ----------
+// ---------- PERFORMANCE CARD PAGE & PDF EXPORT LOGIC ----------
 function populateAgentCardSelect(){
   const sel = document.getElementById('agentCardSelect');
   if (!sel) return;
@@ -1278,6 +1290,28 @@ function renderPerformanceCard(){
       </div>
     </div>
   `;
+}
+
+// EXACT COLORFUL PDF DOWNLOAD FUNCTION USING HTML2PDF
+function downloadPerformanceCardPDF() {
+  const sel = document.getElementById('agentCardSelect');
+  const agentName = sel ? sel.value : '';
+  if (!agentName) {
+    alert('Please select an agent first to download their Performance Card!');
+    return;
+  }
+
+  const element = document.getElementById('performanceCardContainer');
+  
+  const opt = {
+    margin:       [0.2, 0.2, 0.2, 0.2],
+    filename:     `${agentName.replace(/\s+/g, '_')}_Performance_Card.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#f4f6fa' },
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+  };
+
+  html2pdf().set(opt).from(element).save();
 }
 
 // ---------- AUDIT REPORT PAGE ----------
