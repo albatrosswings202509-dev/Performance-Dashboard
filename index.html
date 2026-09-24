@@ -198,7 +198,7 @@
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
 
-  /* EMPATHY PARAMETER GRID — 4 CARDS PER ROW */
+  /* EMPATHY PARAMETER GRID — EXACT 4 CARDS PER ROW */
   #empathyParamCards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -378,7 +378,7 @@
           <table>
             <thead><tr>
               <th>Agent</th><th class="num">Audits</th><th class="num">Pass</th><th class="num">Fail</th><th class="num">Fail %</th>
-              <th class="num">Empathy Pass</th><th class="num">Empathy Fail</th><th class="num">Empathy %</th><th class="num">Shortfall vs 88%</th>
+              <th class="num">RTC Accuracy %</th><th class="num">Empathy Pass</th><th class="num">Empathy Fail</th><th class="num">Empathy %</th><th class="num">Shortfall vs 88%</th>
             </tr></thead>
             <tbody id="agentTable"></tbody>
           </table>
@@ -490,7 +490,7 @@
       <div class="filterbar">
         <div class="fgroup" style="max-width:280px;">
           <label>Search Record</label>
-          <input type="text" id="logSearch" placeholder="Search agent, QA…" oninput="renderAuditLog()">
+          <input type="text" id="logSearch" placeholder="Search agent, auditor, topic…" oninput="renderAuditLog()">
         </div>
         <div class="fgroup" style="min-width:140px;">
           <label>Result Filter</label>
@@ -504,7 +504,7 @@
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>Eval Date</th><th>Agent</th><th>QA</th><th>ANI</th><th>Topic</th><th>Result</th><th>Critical Error</th><th>RTC</th>
+            <th>Eval Date</th><th>Agent</th><th>Auditor Name</th><th>ANI</th><th>Call Topic Name</th><th>CE Topic</th><th>Result</th><th>Critical Error</th><th>RTC</th>
           </tr></thead>
           <tbody id="auditLogTable"></tbody>
         </table>
@@ -516,13 +516,14 @@
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyp_ConEgvJQrxHnfR17kCNtjn55EtjrVBeuqXzFfYfRq0woos59VHmKPqhblmeAoLG/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyzYZwCnRd56y791Gaui-gvqL4jDZBpJ4_TWdSv8a3TO_q7xQE_nEEqnu8WOEx-qU7z/exec";
 const REFRESH_INTERVAL_MS = 30000;
 const TARGET_TL_NAME = "Mohammad Imam Hossain"; // Permanently Hardcoded
 const EMPATHY_AGENT_TARGET = 0.88;   
 const EMPATHY_PARAM_TARGET = 0.875;  
 const AHT_TARGET = 170;              
 const CFS_TARGET = 0.90;
+const MONTHLY_CFS_TARGET = 0.905; // 90.50%
 
 let DATA = { agentAudits: [], empathyWise: [], ort: [], tlOrt: [], alignment: [], complaint: [], dkb: [], serviceDelivery: [] };
 
@@ -530,6 +531,8 @@ let DATA = { agentAudits: [], empathyWise: [], ort: [], tlOrt: [], alignment: []
 const numOf = (v) => { if(v===null||v===undefined||v==='') return 0; const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 const pct = (n) => (n===null||n===undefined||isNaN(n)) ? '—' : (n*100).toFixed(1) + '%';
 const isPass = (v) => String(v||'').trim().toLowerCase() === 'pass';
+const isRtcPass = (v) => { if(!v) return false; const s = String(v).trim().toLowerCase(); return s==='pass' || s==='1' || s==='yes' || s==='rtc pass' || s==='true'; };
+
 function el(tag, attrs={}, html=''){ const e=document.createElement(tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); e.innerHTML=html; return e; }
 function groupBy(arr, keyFn){ const m=new Map(); arr.forEach(r=>{const k=keyFn(r); if(!m.has(k)) m.set(k,[]); m.get(k).push(r);}); return m; }
 
@@ -561,7 +564,7 @@ function normPct(v){
   return n > 1 ? n / 100 : n; 
 }
 
-// Fixed robust duration parser for Lag Hours and Breaks
+// Robust Duration Parser for Lag Hours & Over Break
 function parseDurationHours(v){
   if(v === null || v === undefined || v === '') return 0;
   if(typeof v === 'number') return v;
@@ -577,12 +580,14 @@ function parseDurationHours(v){
     s = parts[parts.length - 1].replace('Z','');
   }
 
-  const timeParts = s.split(':').map(Number);
-  if(timeParts.length === 3 && !timeParts.some(isNaN)) {
-    return timeParts[0] + timeParts[1]/60 + timeParts[2]/3600;
-  }
-  if(timeParts.length === 2 && !timeParts.some(isNaN)) {
-    return timeParts[0] + timeParts[1]/60;
+  if(s.includes(':')) {
+    const timeParts = s.split(':').map(Number);
+    if(timeParts.length === 3 && !timeParts.some(isNaN)) {
+      return timeParts[0] + timeParts[1]/60 + timeParts[2]/3600;
+    }
+    if(timeParts.length === 2 && !timeParts.some(isNaN)) {
+      return timeParts[0] + timeParts[1]/60;
+    }
   }
 
   const cleanNum = s.replace(/[^0-9.]/g, '');
@@ -611,7 +616,7 @@ function getRowsByTL(sheetData, targetTL) {
   });
 }
 
-// Extract exact row for Mohammad Imam Hossain from "TL ORT" sheet with Lag Hour fix
+// Extract exact row for Mohammad Imam Hossain from "TL ORT" sheet with exact Lag Time & Over Break
 function getTlOrtMetrics(targetTL) {
   const normTarget = normalizeName(targetTL);
   const tlOrtList = DATA.tlOrt || [];
@@ -636,16 +641,16 @@ function getTlOrtMetrics(targetTL) {
     }
   }
 
-  let aht = 0, cfs = null, adh = null, lag = 0, overBreak = 0;
+  let aht = 0, cfs = null, adh = null, lag = 0, overBreak = 0, rawLagVal = '';
 
   if (row) {
     aht = numOf(getRowVal(row, ['AHT', 'Avg AHT', 'Average AHT', 'AHT (sec)', 'AHT Sec', 'AHTSec']));
     cfs = normPct(getRowVal(row, ['CFS %', 'CFS', 'Avg CFS %', 'Avg CFS', 'Average CFS', 'CFS Percent', 'CFS%']));
     adh = normPct(getRowVal(row, ['Adherence %', 'Adherence', 'Avg Adherence', 'Avg Adherence %', 'Team Avg Adherence', 'Adherence%']));
     
-    // LAG HOUR EXTRACTION
-    const rawLag = getRowVal(row, ['Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag', 'LagTime', 'Lag Hour(s)', 'Lag (Hours)', 'Total Lag']);
-    lag = parseDurationHours(rawLag);
+    // LAG TIME EXTRACTION DIRECT FROM TL ORT ROW
+    rawLagVal = getRowVal(row, ['Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag', 'LagTime', 'Lag Hour(s)', 'Lag (Hours)', 'Total Lag']);
+    lag = parseDurationHours(rawLagVal);
 
     // OVER BREAK EXTRACTION
     const rawOb = getRowVal(row, ['Agents with Over Break', 'Over Break', 'Over Break Count', 'Extra Break', 'OverBreak', 'Break Over']);
@@ -661,7 +666,6 @@ function getTlOrtMetrics(targetTL) {
     }
   }
 
-  // Fallback: Sum up Lag Hours & Over Break from aligned agents in ORT sheet if missing/0 in TL ORT
   const alignedOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
   const ortOverBreakCount = alignedOrt.filter(r => parseDurationHours(getRowVal(r, ['Extra Break', 'Over Break', 'Break Over', 'OverBreak'])) > 0).length;
   const ortLagSum = alignedOrt.reduce((s, r) => s + parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime', 'Total Lag Hours'])), 0);
@@ -680,7 +684,7 @@ function getTlOrtMetrics(targetTL) {
     adh = adhVals.length ? adhVals.reduce((a, b) => a + b, 0) / adhVals.length : 0;
   }
 
-  return { aht, cfs, adh, lag, overBreak };
+  return { aht, cfs, adh, lag, rawLagVal, overBreak };
 }
 
 function processPayload(json) {
@@ -795,10 +799,10 @@ function toggleMobileSidebar(){ document.body.classList.toggle('sidebar-open'); 
 
 const PAGE_META = {
   overview:   {title:'Dashboard Overview', sub:'Team performance summary for Mohammad Imam Hossain'},
-  agent:      {title:'Agent Performance', sub:'Individual quality evaluation & empathy parameters'},
+  agent:      {title:'Agent Performance', sub:'Individual quality evaluation, RTC & empathy parameters'},
   empathy:    {title:'Empathy Analysis', sub:'Parameter-wise empathy breakdown'},
   adherence:  {title:'Adherence & Break', sub:'Adherence, Over Break, Lag Hour & Service Delivery metrics'},
-  ahtcfs:     {title:'AHT & CFS', sub:'Average Handle Time & First Contact Resolution'},
+  ahtcfs:     {title:'AHT & CFS', sub:'Average Handle Time, First Contact Resolution & DRR %'},
   complaint:  {title:'Complaint & DKB', sub:'Complaint Escalation Accuracy & DKB Health %'},
   log:        {title:'Audit Log', sub:'Raw call-level audit records'}
 };
@@ -853,6 +857,10 @@ function agentAggregates(onlyRoster=false, activeOnly=true){
     const total = rows.length;
     const pass = rows.filter(r=>isPass(getRowVal(r, ['Pass or Fail', 'Result', 'Pass/Fail']))).length;
     const fail = total - pass;
+
+    // RTC Accuracy from Column EJ of IB agent wise sheet
+    const rtcPass = rows.filter(r => isRtcPass(getRowVal(r, ['EJ', 'RTC Accuracy', 'RTC Status', 'RTC']))).length;
+    const rtcPct = total ? (rtcPass / total) : null;
     
     const ceCount = rows.filter(r => {
       const ce = String(getRowVal(r, ['Critical Error', 'Critical', 'CE']) || '').trim().toLowerCase();
@@ -862,7 +870,7 @@ function agentAggregates(onlyRoster=false, activeOnly=true){
     const ep = rows.reduce((s,r)=>s+numOf(getRowVal(r, ['Total Emp Parameter Pass Count', 'Emp Pass', 'Empathy Pass'])),0);
     const ef = rows.reduce((s,r)=>s+numOf(getRowVal(r, ['Total Emp Parameter Fail Count', 'Emp Fail', 'Empathy Fail'])),0);
     const empPct = (ep+ef)>0 ? ep/(ep+ef) : null;
-    out.push({agent, sampleVdi, total, pass, fail, failPct: fail/total, ceCount, ep, ef, empPct});
+    out.push({agent, sampleVdi, total, pass, fail, failPct: fail/total, rtcPass, rtcPct, ceCount, ep, ef, empPct});
   });
   return out;
 }
@@ -875,7 +883,6 @@ function renderOverview(){
   const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
   const tlAgentsCount = allAlignedAgents.length;
 
-  // 1. Audit Calculation directly from "IB agent wise" sheet for Mohammad Imam Hossain
   let tlAudits = getRowsByTL(DATA.agentAudits, TARGET_TL_NAME);
   if (tlAudits.length === 0) {
     tlAudits = DATA.agentAudits.filter(r => isRosterAgent(getRowVal(r, ['Agent Name', 'Agent', 'Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
@@ -889,13 +896,11 @@ function renderOverview(){
   const efSum = tlAudits.reduce((s,r)=>s+numOf(getRowVal(r, ['Total Emp Parameter Fail Count', 'Emp Fail'])),0);
   const empPct = (epSum+efSum)>0 ? epSum/(epSum+efSum) : 0;
 
-  // 2. ORT Metrics directly from "TL ORT" sheet row for Mohammad Imam Hossain
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
   const avgAht = tlOrtMetrics.aht;
   const avgCfs = tlOrtMetrics.cfs;
   const avgAdh = tlOrtMetrics.adh;
 
-  // 3. Service Delivery Count
   const sdByVdi = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID', 'User ID'])));
   const sdByName = groupBy(DATA.serviceDelivery, r => normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name'])));
   let tlSdCount = 0;
@@ -908,7 +913,6 @@ function renderOverview(){
     tlSdCount += sdRows.length;
   });
 
-  // 4. Escalation Valid %
   const complaintByVdi = groupBy(DATA.complaint, r => normalizeName(getRowVal(r, ['VDI ID', 'VDI', 'Emp ID', 'ID', 'VDI_ID'])));
   const complaintByName = groupBy(DATA.complaint, r => normalizeName(getRowVal(r, ['Agent Name', 'Name', 'Agent', 'Employee Name'])));
   let totalValid = 0, totalComp = 0;
@@ -940,7 +944,6 @@ function renderOverview(){
   });
   const validEscPct = totalComp > 0 ? (totalValid / totalComp) : 0;
 
-  // 5. DKB Health %
   const dkbById = new Map();
   (DATA.dkb || []).forEach(r => {
     const id = normalizeName(getRowVal(r, ['ID', 'VDI ID', 'VDI', 'Emp ID', 'Employee ID', 'User ID']));
@@ -970,7 +973,7 @@ function renderOverview(){
   kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦', 'Team Average');
   kpiCard(box, 'TL Alignment Count', tlAgentsCount, 'purple', '☺', `${activeAlignedAgents.length} Active / ${tlAgentsCount} Total`);
 
-  // Leaderboard Tables — ACTIVE AGENTS ONLY
+  // Leaderboard Tables
   const activeRosterAggs = agentAggregates(true, true);
 
   const topCeBody = document.getElementById('ovTopCeHolders'); topCeBody.innerHTML='';
@@ -1036,6 +1039,11 @@ function renderAgentPage(){
   const totalAudits = tlAudits.length;
   const totalPass = tlAudits.filter(r=>isPass(getRowVal(r, ['Pass or Fail', 'Result', 'Pass/Fail']))).length;
   const totalFail = totalAudits - totalPass;
+
+  // TEAM RTC ACCURACY CALCULATION FROM COLUMN EJ OF IB AGENT WISE SHEET
+  const teamRtcPass = tlAudits.filter(r => isRtcPass(getRowVal(r, ['EJ', 'RTC Accuracy', 'RTC Status', 'RTC']))).length;
+  const teamRtcPct = totalAudits ? (teamRtcPass / totalAudits) : 0;
+
   const teamEp = tlAudits.reduce((s,r)=>s+numOf(getRowVal(r, ['Total Emp Parameter Pass Count', 'Emp Pass'])),0);
   const teamEf = tlAudits.reduce((s,r)=>s+numOf(getRowVal(r, ['Total Emp Parameter Fail Count', 'Emp Fail'])),0);
   const teamEmpPct = (teamEp+teamEf)>0 ? teamEp/(teamEp+teamEf) : 0;
@@ -1043,6 +1051,7 @@ function renderAgentPage(){
 
   kpiCard(box, 'Total Audits (TL Team)', totalAudits, 'blue', '▤', `Direct IB TL ${TARGET_TL_NAME}`);
   kpiCard(box, 'Overall Fail %', totalAudits? pct(totalFail/totalAudits):'—', 'bad', '✕', 'Direct IB Sheet Total');
+  kpiCard(box, 'RTC Accuracy', pct(teamRtcPct), teamRtcPct>=0.9?'good':'warn', '🎯', `${teamRtcPass}/${totalAudits} Pass (EJ Col)`);
   kpiCard(box, 'Overall Empathy %', pct(teamEmpPct), teamEmpPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥', teamEmpPct>=EMPATHY_AGENT_TARGET?'Meets Target':'Below Target');
   kpiCard(box, 'TL Below Target (Active)', belowTarget, belowTarget>0?'warn':'good', '⚑', `Out of ${activeRosterAggs.length} Active Agents`);
 
@@ -1056,7 +1065,7 @@ function renderAgentPage(){
         <div class="spotlight-metrics">
           <div><div class="sm-val">${a.pass}</div><div class="sm-label">PASS</div></div>
           <div><div class="sm-val">${a.fail}</div><div class="sm-label">FAIL</div></div>
-          <div><div class="sm-val">${pct(a.failPct)}</div><div class="sm-label">FAIL %</div></div>
+          <div><div class="sm-val">${a.rtcPct!==null?pct(a.rtcPct):'—'}</div><div class="sm-label">RTC ACCURACY</div></div>
           <div><div class="sm-val">${a.empPct!==null?pct(a.empPct):'—'}</div><div class="sm-label">EMPATHY %</div></div>
           <div><div class="sm-val" style="color:${shortfall>0?'#f0a5a0':'#7de3b0'}">${shortfall>0?'-'+pct(shortfall):'Target Met'}</div><div class="sm-label">VS 88% TARGET</div></div>
         </div>`;
@@ -1066,7 +1075,7 @@ function renderAgentPage(){
   const tbody = document.getElementById('agentTable'); tbody.innerHTML='';
   const rowsToShow = selected ? activeRosterAggs.filter(a=>a.agent===selected) : activeRosterAggs;
   if(rowsToShow.length===0){ 
-    tbody.appendChild(el('tr',{},`<td colspan="9" class="empty-note">No active roster agents matched.</td>`)); 
+    tbody.appendChild(el('tr',{},`<td colspan="10" class="empty-note">No active roster agents matched.</td>`)); 
     return; 
   }
   [...rowsToShow].sort((a,b)=>(a.empPct??1)-(b.empPct??1)).forEach(a=>{
@@ -1077,6 +1086,7 @@ function renderAgentPage(){
       <td class="num">${a.pass}</td>
       <td class="num">${a.fail}</td>
       <td class="num">${pct(a.failPct)}</td>
+      <td class="num ${a.rtcPct!==null && a.rtcPct<0.9?'cell-red':'cell-good'}">${a.rtcPct!==null?pct(a.rtcPct):'—'}</td>
       <td class="num">${a.ep}</td>
       <td class="num">${a.ef}</td>
       <td class="num ${a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET ? 'cell-red':'cell-good'}">${a.empPct!==null?pct(a.empPct):'—'}</td>
@@ -1168,7 +1178,6 @@ function renderEmpathyPage(){
   const body = document.getElementById('empathyMatrixBody'); 
   body.innerHTML = '';
 
-  // Table Matrix: ACTIVE AGENTS ONLY FOR MOHAMMAD IMAM HOSSAIN
   const activeRosterEmpathy = rows.filter(r => {
     const vdi = getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']);
     const name = getRowVal(r, ['Agent Name', 'Name', 'Agent']);
@@ -1204,7 +1213,6 @@ function renderEmpathyPage(){
 
 // ---------- ADHERENCE & BREAK PAGE ----------
 function renderAdherencePage(){
-  // Direct TL ORT Sheet row for Mohammad Imam Hossain
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
 
   const box = document.getElementById('kpiAdherence'); box.innerHTML='';
@@ -1212,6 +1220,7 @@ function renderAdherencePage(){
   const avgAdherence = tlOrtMetrics.adh;
   const overBreakCount = tlOrtMetrics.overBreak;
   const totalLagHours = tlOrtMetrics.lag;
+  const rawLagVal = tlOrtMetrics.rawLagVal;
 
   const allAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, false);
   const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
@@ -1229,14 +1238,20 @@ function renderAdherencePage(){
     totalTlSdCount += sdRows.length;
   });
 
-  const displayLag = totalLagHours > 0 ? (fmtHoursMin(totalLagHours) !== '—' ? fmtHoursMin(totalLagHours) : totalLagHours.toFixed(1) + 'h') : '0h';
+  // Lag Hour exact display from TL ORT row
+  let displayLag = '—';
+  if (rawLagVal !== '' && rawLagVal !== null && rawLagVal !== undefined) {
+    displayLag = String(rawLagVal).includes(':') ? String(rawLagVal) : fmtHoursMin(totalLagHours);
+  } else if (totalLagHours > 0) {
+    displayLag = fmtHoursMin(totalLagHours);
+  }
 
   kpiCard(box, 'Team Avg Adherence', avgAdherence!==null?pct(avgAdherence):'—', (avgAdherence!==null && avgAdherence>=0.9)?'good':'warn', '◷', `TL ${TARGET_TL_NAME}`);
   kpiCard(box, 'Agents with Over Break', overBreakCount, overBreakCount>0?'warn':'good', '⚠', `TL ORT Metric`);
-  kpiCard(box, 'Total Lag Hours', displayLag, 'bad', '⏳', `TL ORT Metric`);
+  kpiCard(box, 'Total Lag Hours', displayLag, 'bad', '⏳', `TL ORT Row Lag Time`);
   kpiCard(box, 'Service Delivery Count', totalTlSdCount, 'good', '🚚', `TL ${TARGET_TL_NAME}`);
 
-  // Tables — ACTIVE ALIGNED AGENTS ONLY
+  // Tables
   const agentSdList = activeAlignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
@@ -1295,16 +1310,33 @@ function renderAdherencePage(){
   }
 }
 
-// ---------- AHT & CFS PAGE ----------
+// ---------- AHT & CFS PAGE (WITH DRR % CARD) ----------
 function renderAhtCfsPage(){
-  // Direct TL ORT Sheet calculation for Mohammad Imam Hossain
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
   const box = document.getElementById('kpiAhtCfs'); box.innerHTML='';
 
   const avgAht = tlOrtMetrics.aht;
   const avgCfs = tlOrtMetrics.cfs;
 
-  // Calculate AHT & CFS Target Met counts based strictly on ALIGNED AGENTS of Mohammad Imam Hossain in ORT Sheet
+  // DRR % ESTIMATED CALCULATION (Daily 100 estimated CFS responses to reach 90.50% Target)
+  const dailyVol = 100;
+  const now = new Date();
+  const totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const currentDay = Math.min(now.getDate(), totalDaysInMonth);
+  const remainingDays = totalDaysInMonth - currentDay;
+
+  const currentCFS = avgCfs !== null ? avgCfs : 0;
+  let drrVal = MONTHLY_CFS_TARGET;
+
+  if (remainingDays > 0) {
+    const totalTargetPasses = totalDaysInMonth * dailyVol * MONTHLY_CFS_TARGET;
+    const passesAchievedSoFar = currentDay * dailyVol * currentCFS;
+    const passesNeeded = totalTargetPasses - passesAchievedSoFar;
+    drrVal = passesNeeded / (remainingDays * dailyVol);
+  } else {
+    drrVal = currentCFS;
+  }
+
   const alignedOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
 
   const ahtMeeting = alignedOrt.filter(r => { const v = numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec'])); return v > 0 && v <= AHT_TARGET; }).length;
@@ -1317,6 +1349,7 @@ function renderAhtCfsPage(){
   kpiCard(box, 'AHT Target Met', `${ahtMeeting}/${totalAhtAligned}`, ahtMeeting===totalAhtAligned?'good':'warn', '✓', 'Aligned Agents Count');
   kpiCard(box, 'Team Avg CFS', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎', `Target ${pct(CFS_TARGET)} (TL ORT Row)`);
   kpiCard(box, 'CFS Target Met', `${cfsMeeting}/${totalCfsAligned}`, cfsMeeting===totalCfsAligned?'good':'warn', '✓', 'Aligned Agents Count');
+  kpiCard(box, 'DRR % (CFS)', pct(drrVal), (drrVal <= MONTHLY_CFS_TARGET)?'good':'bad', '📈', `Est. Daily Rate for 90.50%`);
 
   // Table — ACTIVE ALIGNED AGENTS ONLY
   const activeTlOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
@@ -1416,7 +1449,7 @@ function renderComplaintPage(){
   kpiCard(box, 'Team Valid Escalation %', pct(avgValidEscPct), 'purple', '⚑', `Valid / Total`);
   kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), 'blue', '▦', `Matched by ID`);
 
-  // Tables — ACTIVE ALIGNED AGENTS ONLY
+  // Tables
   const agentComplaintData = activeAlignedAgents.map(ag => {
     const normVdi = normalizeName(ag.vdi);
     const normName = normalizeName(ag.name);
@@ -1504,13 +1537,12 @@ function renderComplaintPage(){
   }
 }
 
-// ---------- AUDIT LOG (WITHOUT SKILL COLUMN) ----------
+// ---------- AUDIT LOG (WITH AUDITOR NAME FROM HF & CALL TOPIC NAME FROM DQ) ----------
 function renderAuditLog(){
   const search = (document.getElementById('logSearch').value||'').toLowerCase();
   const resFilter = document.getElementById('logResultFilter') ? document.getElementById('logResultFilter').value : '';
   const tbody = document.getElementById('auditLogTable'); tbody.innerHTML='';
   
-  // ACTIVE AGENTS ONLY FOR MOHAMMAD IMAM HOSSAIN
   const rosterAudits = DATA.agentAudits.filter(r => isRosterAgent(getRowVal(r, ['Agent Name', 'Agent', 'Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
   
   const sorted = [...rosterAudits].sort((a,b)=>{
@@ -1522,37 +1554,43 @@ function renderAuditLog(){
   let shown=0;
   for(const r of sorted){
     if(shown>=200) break;
-    const agent = getRowVal(r, ['Agent Name', 'Agent', 'Name']);
-    const qa = getRowVal(r, ['QA']);
+    const evalDate = getRowVal(r, ['Eval Date', 'Date']) || '';
+    const agent = getRowVal(r, ['Agent Name', 'Agent', 'Name']) || '';
+    const auditorName = getRowVal(r, ['HF', 'Auditor Name', 'Auditor', 'QA']) || '—';
+    const ani = getRowVal(r, ['ANI']) || '—';
+    const callTopicName = getRowVal(r, ['DQ', 'Call Topic Name', 'Call Topic', 'Topic Name']) || '—';
+    const ceTopic = getRowVal(r, ['Topic', 'CE Topic', 'Critical Error Topic']) || '—';
+
     const rawRes = getRowVal(r, ['Pass or Fail', 'Result', 'Pass/Fail']);
     const status = isPass(rawRes) ? 'Pass' : 'Fail';
 
     if(resFilter && status !== resFilter) continue;
 
-    const hay = `${agent} ${qa}`.toLowerCase();
+    const hay = `${agent} ${auditorName} ${callTopicName} ${ceTopic}`.toLowerCase();
     if(search && !hay.includes(search)) continue;
 
     tbody.appendChild(el('tr',{}, `
-      <td>${getRowVal(r, ['Eval Date', 'Date'])||''}</td>
-      <td>${agent||''}</td>
-      <td>${qa||''}</td>
-      <td>${getRowVal(r, ['ANI'])||''}</td>
-      <td>${getRowVal(r, ['Topic'])||''}</td>
+      <td>${evalDate}</td>
+      <td>${agent}</td>
+      <td>${auditorName}</td>
+      <td>${ani}</td>
+      <td>${callTopicName}</td>
+      <td>${ceTopic}</td>
       <td><span class="pill ${status==='Pass'?'pass':'fail'}">${status}</span></td>
-      <td>${getRowVal(r, ['Critical Error'])||''}</td>
-      <td>${getRowVal(r, ['RTC'])||''}</td>
+      <td>${getRowVal(r, ['Critical Error'])||'—'}</td>
+      <td>${getRowVal(r, ['RTC'])||'—'}</td>
     `));
     shown++;
   }
-  if(shown===0) tbody.appendChild(el('tr',{}, `<td colspan="8" class="empty-note">No matching audit logs found.</td>`));
+  if(shown===0) tbody.appendChild(el('tr',{}, `<td colspan="9" class="empty-note">No matching audit logs found.</td>`));
 }
 
 // ---------- EXPORT CSV ----------
 function exportCSV(){
   let cols, rowsData, filename;
   if(CURRENT_PAGE==='agent'){
-    cols=['Agent','Audits','Pass','Fail','Fail%','Empathy Pass','Empathy Fail','Empathy%'];
-    rowsData = agentAggregates(true, true).map(a=>[a.agent,a.total,a.pass,a.fail,pct(a.failPct),a.ep,a.ef,a.empPct!==null?pct(a.empPct):'']);
+    cols=['Agent','Audits','Pass','Fail','Fail%','RTC Accuracy%','Empathy Pass','Empathy Fail','Empathy%'];
+    rowsData = agentAggregates(true, true).map(a=>[a.agent,a.total,a.pass,a.fail,pct(a.failPct),a.rtcPct!==null?pct(a.rtcPct):'',a.ep,a.ef,a.empPct!==null?pct(a.empPct):'']);
     filename='agent_performance';
   } else if(CURRENT_PAGE==='adherence'){
     cols=['Agent Name','VDI ID','Adherence%','Over Break','Lag Hour'];
@@ -1563,9 +1601,19 @@ function exportCSV(){
     rowsData = getAlignmentAgents(TARGET_TL_NAME, true).map(ag=>[ag.name, ag.vdi, '0','0','0','0%']);
     filename='complaint_escalation';
   } else {
-    cols=['Eval Date','Agent Name','QA','ANI','Topic','Result','Critical Error','RTC'];
+    cols=['Eval Date','Agent Name','Auditor Name','ANI','Call Topic Name','CE Topic','Result','Critical Error','RTC'];
     rowsData = DATA.agentAudits.filter(r=>isRosterAgent(getRowVal(r, ['Agent Name', 'Agent']), getRowVal(r, ['VDI ID']), true))
-      .map(r=>[getRowVal(r, ['Eval Date']),getRowVal(r, ['Agent Name']),getRowVal(r, ['QA']),getRowVal(r, ['ANI']),getRowVal(r, ['Topic']),isPass(getRowVal(r, ['Pass or Fail']))?'Pass':'Fail',getRowVal(r, ['Critical Error']),getRowVal(r, ['RTC'])]);
+      .map(r=>[
+        getRowVal(r, ['Eval Date']),
+        getRowVal(r, ['Agent Name']),
+        getRowVal(r, ['HF', 'Auditor Name', 'Auditor', 'QA']),
+        getRowVal(r, ['ANI']),
+        getRowVal(r, ['DQ', 'Call Topic Name', 'Call Topic']),
+        getRowVal(r, ['Topic', 'CE Topic']),
+        isPass(getRowVal(r, ['Pass or Fail']))?'Pass':'Fail',
+        getRowVal(r, ['Critical Error']),
+        getRowVal(r, ['RTC'])
+      ]);
     filename='audit_log';
   }
   const lines = [cols.join(',')].concat(rowsData.map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')));
