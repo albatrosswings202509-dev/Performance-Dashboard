@@ -298,8 +298,8 @@
       <div class="nav-item" data-page="empathy" onclick="setPage('empathy')"><span class="ic">♥</span>Empathy Analysis</div>
       <div class="nav-item" data-page="adherence" onclick="setPage('adherence')"><span class="ic">◷</span>Adherence &amp; Break</div>
       <div class="nav-item" data-page="ahtcfs" onclick="setPage('ahtcfs')"><span class="ic">◎</span>AHT &amp; CFS</div>
-      <div class="nav-item" data-page="complaint" onclick="setPage('complaint')"><span class="ic">⚠</span>Complaint &amp; DKB</div>
-      <div class="nav-item" data-page="log" onclick="setPage('log')"><span class="ic">▦</span>Audit Log</div>
+      <div class="nav-item" data-page="complaint" onclick="setPage('complaint')"><span class="ic">⚠</span>Complaint &amp; DKB %</div>
+      <div class="nav-item" data-page="log" onclick="setPage('log')"><span class="ic">▦</span>Audited Call details</div>
     </div>
     <div class="sidebar-foot">Better Quality<br>Stronger Performance</div>
   </div>
@@ -325,7 +325,7 @@
     <!-- ============ OVERVIEW ============ -->
     <div class="page active" id="page-overview">
       <section>
-        <div class="section-head"><h2>Mohammad Imam Hossain — Team KPI Summary</h2></div>
+        <div class="section-head"><h2>Overall Team Summary</h2></div>
         <div class="kpi-row" id="kpiOverview"></div>
       </section>
       <section>
@@ -367,7 +367,7 @@
       </div>
       <div class="spotlight" id="agentSpotlight" style="display:none;"></div>
       <section>
-        <div class="section-head"><h2>Team Performance Summary</h2></div>
+        <div class="section-head"><h2>Team Audit Summary</h2></div>
         <div class="kpi-row" id="kpiAgent"></div>
       </section>
       <section>
@@ -408,7 +408,7 @@
         <div class="kpi-row" id="kpiAdherence"></div>
       </section>
       <section>
-        <div class="section-head"><h2>1. Agent Adherence, Over Break &amp; Lag Hour (ORT Sheet)</h2></div>
+        <div class="section-head"><h2>Agent Wise Adherence, Over Break &amp; Lag Hour</h2></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -420,7 +420,7 @@
         </div>
       </section>
       <section style="margin-top:28px;">
-        <div class="section-head"><h2>2. Agent Service Delivery (Service Delivery Sheet)</h2></div>
+        <div class="section-head"><h2>Agent Wise Service Delivery</h2></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -450,14 +450,14 @@
       </section>
     </div>
 
-    <!-- ============ COMPLAINT & DKB ============ -->
+    <!-- ============ COMPLAINT & DKB % ============ -->
     <div class="page" id="page-complaint">
       <section>
-        <div class="section-head"><h2>Team Complaint &amp; DKB Summary</h2></div>
+        <div class="section-head"><h2>Team Complaint &amp; DKB % Summary</h2></div>
         <div class="kpi-row" id="kpiComplaint"></div>
       </section>
       <section>
-        <div class="section-head"><h2>1. Escalation Accuracy Breakdown (Complaint Sheet)</h2></div>
+        <div class="section-head"><h2>Escalation Accuracy %</h2></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -470,7 +470,7 @@
         </div>
       </section>
       <section style="margin-top:28px;">
-        <div class="section-head"><h2>2. Agent DKB Health % (DKB Sheet - Matched by ID)</h2></div>
+        <div class="section-head"><h2>Agent Wise DKB %</h2></div>
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -483,7 +483,7 @@
       </section>
     </div>
 
-    <!-- ============ AUDIT LOG ============ -->
+    <!-- ============ AUDITED CALL DETAILS ============ -->
     <div class="page" id="page-log">
       <div class="filterbar">
         <div class="fgroup" style="max-width:280px;">
@@ -801,8 +801,8 @@ const PAGE_META = {
   empathy:    {title:'Empathy Analysis'},
   adherence:  {title:'Adherence & Break'},
   ahtcfs:     {title:'AHT & CFS'},
-  complaint:  {title:'Complaint & DKB'},
-  log:        {title:'Audit Log'}
+  complaint:  {title:'Complaint & DKB %'},
+  log:        {title:'Audited Call details'}
 };
 
 let CURRENT_PAGE = 'overview';
@@ -959,7 +959,7 @@ function renderOverview(){
   });
   const avgDkbHealth = dkbHealthList.length ? (dkbHealthList.reduce((a,b)=>a+b,0)/dkbHealthList.length) : 0;
 
-  // Render Dashboard Overview 10 KPI Cards (Subtext removed)
+  // Render Dashboard Overview 10 KPI Cards
   kpiCard(box, 'Total Audits', totalAudits.toLocaleString(), 'blue', '▤');
   kpiCard(box, 'Pass Rate', totalAudits? pct(passRate) : '—', passRate>=0.85?'good':'bad', '✓');
   kpiCard(box, 'Empathy Pass %', pct(empPct), empPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥');
@@ -968,7 +968,7 @@ function renderOverview(){
   kpiCard(box, 'Avg Adherence', avgAdh!==null?pct(avgAdh):'—', (avgAdh!==null && avgAdh>=0.9)?'good':'warn', '◷');
   kpiCard(box, 'Service Delivery', tlSdCount, 'good', '🚚');
   kpiCard(box, 'Valid Escalation %', pct(validEscPct), 'purple', '⚑');
-  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦');
+  kpiCard(box, 'DKB%', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦');
   kpiCard(box, 'TL Alignment Count', tlAgentsCount, 'purple', '☺');
 
   // Leaderboard Tables
@@ -1379,7 +1379,7 @@ function renderAhtCfsPage(){
   });
 }
 
-// ---------- COMPLAINT & DKB PAGE ----------
+// ---------- COMPLAINT & DKB % PAGE ----------
 function renderComplaintPage(){
   const allAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, false);
   const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
@@ -1540,7 +1540,7 @@ function renderComplaintPage(){
   }
 }
 
-// ---------- AUDIT LOG (WITH AUDITOR NAME FROM HF & CALL TOPIC NAME FROM DQ) ----------
+// ---------- AUDITED CALL DETAILS ----------
 function renderAuditLog(){
   const search = (document.getElementById('logSearch').value||'').toLowerCase();
   const resFilter = document.getElementById('logResultFilter') ? document.getElementById('logResultFilter').value : '';
