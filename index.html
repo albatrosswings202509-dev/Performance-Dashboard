@@ -159,7 +159,6 @@
   section{margin-bottom:24px;}
   .section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:6px;}
   .section-head h2{font-size:15px; font-weight:700; margin:0; color:var(--ink);}
-  .section-head .hint{font-size:11px; color:var(--muted-dim); font-family:var(--mono);}
 
   .filterbar{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px;}
   .filterbar .fgroup{display:flex; flex-direction:column; gap:4px;}
@@ -295,7 +294,7 @@
     </div>
     <div class="sidebar-nav">
       <div class="nav-item active" data-page="overview" onclick="setPage('overview')"><span class="ic">▤</span>Dashboard</div>
-      <div class="nav-item" data-page="agent" onclick="setPage('agent')"><span class="ic">☺</span>Agent Performance</div>
+      <div class="nav-item" data-page="agent" onclick="setPage('agent')"><span class="ic">☺</span>Audit Report</div>
       <div class="nav-item" data-page="empathy" onclick="setPage('empathy')"><span class="ic">♥</span>Empathy Analysis</div>
       <div class="nav-item" data-page="adherence" onclick="setPage('adherence')"><span class="ic">◷</span>Adherence &amp; Break</div>
       <div class="nav-item" data-page="ahtcfs" onclick="setPage('ahtcfs')"><span class="ic">◎</span>AHT &amp; CFS</div>
@@ -361,7 +360,7 @@
       </section>
     </div>
 
-    <!-- ============ AGENT PERFORMANCE ============ -->
+    <!-- ============ AUDIT REPORT ============ -->
     <div class="page" id="page-agent">
       <div class="filterbar">
         <div class="fgroup"><label>Filter Agent (Active)</label><select id="agentSelect" onchange="renderAgentPage()"><option value="">All Active Roster Agents</option></select></div>
@@ -798,7 +797,7 @@ function toggleMobileSidebar(){ document.body.classList.toggle('sidebar-open'); 
 
 const PAGE_META = {
   overview:   {title:'Dashboard Overview'},
-  agent:      {title:'Agent Performance'},
+  agent:      {title:'Audit Report'},
   empathy:    {title:'Empathy Analysis'},
   adherence:  {title:'Adherence & Break'},
   ahtcfs:     {title:'AHT & CFS'},
@@ -960,17 +959,17 @@ function renderOverview(){
   });
   const avgDkbHealth = dkbHealthList.length ? (dkbHealthList.reduce((a,b)=>a+b,0)/dkbHealthList.length) : 0;
 
-  // Render Dashboard Overview 10 KPI Cards (5 per row)
-  kpiCard(box, 'Total Audits', totalAudits.toLocaleString(), 'blue', '▤', `Direct IB`);
-  kpiCard(box, 'Pass Rate', totalAudits? pct(passRate) : '—', passRate>=0.85?'good':'bad', '✓', `${passCount}/${totalAudits} Passed`, passRate>=0.85?'good':'bad');
-  kpiCard(box, 'Empathy Pass %', pct(empPct), empPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥', empPct>=EMPATHY_AGENT_TARGET?'Meets Target':'Below 88%', empPct>=EMPATHY_AGENT_TARGET?'good':'bad');
-  kpiCard(box, 'Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎', `TL ORT Row`);
-  kpiCard(box, 'Avg CFS %', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎', `TL ORT Row`);
-  kpiCard(box, 'Avg Adherence', avgAdh!==null?pct(avgAdh):'—', (avgAdh!==null && avgAdh>=0.9)?'good':'warn', '◷', 'TL ORT Row');
-  kpiCard(box, 'Service Delivery', tlSdCount, 'good', '🚚', `TL Team Count`);
-  kpiCard(box, 'Valid Escalation %', pct(validEscPct), 'purple', '⚑', `${totalValid}/${totalComp} Valid`);
-  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦', 'Team Average');
-  kpiCard(box, 'TL Alignment Count', tlAgentsCount, 'purple', '☺', `${activeAlignedAgents.length} Active / ${tlAgentsCount} Total`);
+  // Render Dashboard Overview 10 KPI Cards (Subtext removed)
+  kpiCard(box, 'Total Audits', totalAudits.toLocaleString(), 'blue', '▤');
+  kpiCard(box, 'Pass Rate', totalAudits? pct(passRate) : '—', passRate>=0.85?'good':'bad', '✓');
+  kpiCard(box, 'Empathy Pass %', pct(empPct), empPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥');
+  kpiCard(box, 'Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎');
+  kpiCard(box, 'Avg CFS %', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎');
+  kpiCard(box, 'Avg Adherence', avgAdh!==null?pct(avgAdh):'—', (avgAdh!==null && avgAdh>=0.9)?'good':'warn', '◷');
+  kpiCard(box, 'Service Delivery', tlSdCount, 'good', '🚚');
+  kpiCard(box, 'Valid Escalation %', pct(validEscPct), 'purple', '⚑');
+  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦');
+  kpiCard(box, 'TL Alignment Count', tlAgentsCount, 'purple', '☺');
 
   // Leaderboard Tables
   const activeRosterAggs = agentAggregates(true, true);
@@ -1013,7 +1012,7 @@ function renderOverview(){
   if(top5AhtBody.children.length===0) top5AhtBody.appendChild(el('tr',{},`<td colspan="3" class="empty-note">No data available</td>`));
 }
 
-// ---------- AGENT PERFORMANCE PAGE ----------
+// ---------- AUDIT REPORT PAGE ----------
 function populateAgentSelect(){
   const sel = document.getElementById('agentSelect');
   if (!sel) return;
@@ -1048,11 +1047,11 @@ function renderAgentPage(){
   const teamEmpPct = (teamEp+teamEf)>0 ? teamEp/(teamEp+teamEf) : 0;
   const belowTarget = activeRosterAggs.filter(a=>a.empPct!==null && a.empPct<EMPATHY_AGENT_TARGET).length;
 
-  kpiCard(box, 'Total Audits (TL Team)', totalAudits, 'blue', '▤', `Direct IB TL ${TARGET_TL_NAME}`);
-  kpiCard(box, 'Overall Fail %', totalAudits? pct(totalFail/totalAudits):'—', 'bad', '✕', 'Direct IB Sheet Total');
-  kpiCard(box, 'RTC Accuracy', pct(teamRtcPct), teamRtcPct>=0.9?'good':'warn', '🎯', `${teamRtcPass}/${totalAudits} Pass (EJ Col)`);
-  kpiCard(box, 'Overall Empathy %', pct(teamEmpPct), teamEmpPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥', teamEmpPct>=EMPATHY_AGENT_TARGET?'Meets Target':'Below Target');
-  kpiCard(box, 'TL Below Target (Active)', belowTarget, belowTarget>0?'warn':'good', '⚑', `Out of ${activeRosterAggs.length} Active Agents`);
+  kpiCard(box, 'Total audit', totalAudits, 'blue', '▤');
+  kpiCard(box, 'Overall Fail %', totalAudits? pct(totalFail/totalAudits):'—', 'bad', '✕');
+  kpiCard(box, 'RTC Accuracy', pct(teamRtcPct), teamRtcPct>=0.9?'good':'warn', '🎯');
+  kpiCard(box, 'Overall Empathy %', pct(teamEmpPct), teamEmpPct>=EMPATHY_AGENT_TARGET?'good':'bad', '♥');
+  kpiCard(box, 'TL Below Target (Active)', belowTarget, belowTarget>0?'warn':'good', '⚑');
 
   if(selected){
     const a = activeRosterAggs.find(x=>x.agent===selected);
@@ -1094,7 +1093,7 @@ function renderAgentPage(){
   });
 }
 
-// ---------- EMPATHY ANALYSIS PAGE ----------
+// ---------- EMPATHY ANALYSIS PAGE (UNTOUCHED KPI CARDS) ----------
 function getEmpathyParameters(sampleRow) {
   const definedParams = [
     { label: 'Warm Greetings', keys: ['Warm Greetings', 'Warm Greeting', 'Greetings', '1.1 Warm Greetings'] },
@@ -1250,10 +1249,10 @@ function renderAdherencePage(){
     displayLag = fmtHoursMin(totalLagHours);
   }
 
-  kpiCard(box, 'Team Avg Adherence', avgAdherence!==null?pct(avgAdherence):'—', (avgAdherence!==null && avgAdherence>=0.9)?'good':'warn', '◷', `TL ${TARGET_TL_NAME}`);
-  kpiCard(box, 'Agents with Over Break', overBreakCount, overBreakCount>0?'warn':'good', '⚠', `TL ORT Metric`);
-  kpiCard(box, 'Total Lag Hours', displayLag, 'bad', '⏳', `TL ORT Row Lag Time`);
-  kpiCard(box, 'Service Delivery Count', totalTlSdCount, 'good', '🚚', `TL ${TARGET_TL_NAME}`);
+  kpiCard(box, 'Avg Adherence', avgAdherence!==null?pct(avgAdherence):'—', (avgAdherence!==null && avgAdherence>=0.9)?'good':'warn', '◷');
+  kpiCard(box, 'Agents with Over Break', overBreakCount, overBreakCount>0?'warn':'good', '⚠');
+  kpiCard(box, 'Total Lag Hours', displayLag, 'bad', '⏳');
+  kpiCard(box, 'Service Delivery Count', totalTlSdCount, 'good', '🚚');
 
   // Tables
   const agentSdList = activeAlignedAgents.map(ag => {
@@ -1314,7 +1313,7 @@ function renderAdherencePage(){
   }
 }
 
-// ---------- AHT & CFS PAGE (WITH DRR % CARD) ----------
+// ---------- AHT & CFS PAGE ----------
 function renderAhtCfsPage(){
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
   const box = document.getElementById('kpiAhtCfs'); box.innerHTML='';
@@ -1349,11 +1348,11 @@ function renderAhtCfsPage(){
   const cfsMeeting = alignedOrt.filter(r => { const v = normPct(getRowVal(r, ['CFS%', 'CFS'])); return v !== null && v >= CFS_TARGET; }).length;
   const totalCfsAligned = alignedOrt.filter(r => normPct(getRowVal(r, ['CFS%', 'CFS'])) !== null).length || alignedOrt.length;
 
-  kpiCard(box, 'Team Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎', `Target ${AHT_TARGET}s (TL ORT Row)`);
-  kpiCard(box, 'AHT Target Met', `${ahtMeeting}/${totalAhtAligned}`, ahtMeeting===totalAhtAligned?'good':'warn', '✓', 'Aligned Agents Count');
-  kpiCard(box, 'Team Avg CFS', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎', `Target ${pct(CFS_TARGET)} (TL ORT Row)`);
-  kpiCard(box, 'CFS Target Met', `${cfsMeeting}/${totalCfsAligned}`, cfsMeeting===totalCfsAligned?'good':'warn', '✓', 'Aligned Agents Count');
-  kpiCard(box, 'DRR % (CFS)', pct(drrVal), (drrVal <= MONTHLY_CFS_TARGET)?'good':'bad', '📈', `Est. Daily Rate for 90.50%`);
+  kpiCard(box, 'Avg AHT', avgAht>0 ? avgAht.toFixed(1)+'s' : '—', (avgAht>0 && avgAht<=AHT_TARGET)?'good':'warn', '◎');
+  kpiCard(box, 'AHT Target Met', `${ahtMeeting}/${totalAhtAligned}`, ahtMeeting===totalAhtAligned?'good':'warn', '✓');
+  kpiCard(box, 'Avg CFS', avgCfs!==null?pct(avgCfs):'—', (avgCfs!==null && avgCfs>=CFS_TARGET)?'good':'bad', '☎');
+  kpiCard(box, 'CFS Target Met', `${cfsMeeting}/${totalCfsAligned}`, cfsMeeting===totalCfsAligned?'good':'warn', '✓');
+  kpiCard(box, 'DRR % (CFS)', pct(drrVal), (drrVal <= MONTHLY_CFS_TARGET)?'good':'bad', '📈');
 
   // Table — ACTIVE ALIGNED AGENTS ONLY
   const activeTlOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
@@ -1447,11 +1446,11 @@ function renderComplaintPage(){
   const avgValidEscPct = totalComplaintsSum > 0 ? (totalValidSum / totalComplaintsSum) : 0;
   const avgDkbHealth = dkbHealthPercentages.length ? (dkbHealthPercentages.reduce((a,b)=>a+b,0)/dkbHealthPercentages.length) : 0;
 
-  kpiCard(box, 'Total Complaints', totalComplaintsSum, 'bad', '⚠', `TL ${TARGET_TL_NAME}`);
-  kpiCard(box, 'Valid Count', totalValidSum, 'warn', '✓', `Total Valid Sum`);
-  kpiCard(box, 'Invalid Count', totalInvalidSum, 'good', '✕', `Total Invalid Sum`);
-  kpiCard(box, 'Team Valid Escalation %', pct(avgValidEscPct), 'purple', '⚑', `Valid / Total`);
-  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), 'blue', '▦', `Matched by ID`);
+  kpiCard(box, 'Total Complaints', totalComplaintsSum, 'bad', '⚠');
+  kpiCard(box, 'Valid Count', totalValidSum, 'warn', '✓');
+  kpiCard(box, 'Invalid Count', totalInvalidSum, 'good', '✕');
+  kpiCard(box, 'Valid Escalation %', pct(avgValidEscPct), 'purple', '⚑');
+  kpiCard(box, 'DKB %', pct(avgDkbHealth), 'blue', '▦');
 
   // Tables
   const agentComplaintData = activeAlignedAgents.map(ag => {
