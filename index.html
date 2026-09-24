@@ -133,15 +133,7 @@
   }
   .topbar h1{font-size:17px; font-weight:700; margin:0; color:var(--ink);}
   .topbar .page-sub{font-size:11.5px; color:var(--muted); margin-top:1px;}
-  .status-cluster{display:flex; align-items:center; gap:12px; font-size:12px; color:var(--muted); flex-wrap:wrap;}
-  
-  .tl-filter-box{
-    display:flex; align-items:center; gap:6px; background:#f0f4fd; padding:4px 10px; border-radius:8px; border:1px solid #d0dcf8;
-  }
-  .tl-filter-box label{font-size:11px; font-weight:700; color:var(--blue); white-space:nowrap;}
-  .tl-filter-box select{
-    background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 8px; font-size:12px; font-weight:600; color:var(--ink); cursor:pointer;
-  }
+  .status-cluster{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted); flex-wrap:wrap;}
 
   .live-chip{
     display:flex; align-items:center; gap:6px; background:var(--good-dim); color:var(--good);
@@ -206,6 +198,13 @@
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
 
+  /* EMPATHY PARAMETER GRID — 4 CARDS PER ROW */
+  #empathyParamCards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
   .param-card{
     border-radius:10px; padding:12px 14px; border:1px solid var(--line);
     background:var(--good-dim); text-align:center;
@@ -254,6 +253,9 @@
   @media (max-width: 1280px) {
     .kpi-row{grid-template-columns: repeat(3, 1fr);}
   }
+  @media (max-width: 900px) {
+    #empathyParamCards { grid-template-columns: repeat(2, 1fr); }
+  }
   @media (max-width: 820px) {
     .mobile-menu-btn{display:inline-block;}
     .sidebar{
@@ -272,8 +274,9 @@
     .kpi-card .kpi-num{font-size:18px;}
     .spotlight{flex-direction:column; align-items:flex-start;}
   }
-  @media (max-width: 480px) {
+  @media (max-width: 500px) {
     .kpi-row{grid-template-columns:1fr;}
+    #empathyParamCards { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -309,16 +312,10 @@
       <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
       <div>
         <h1 id="pageTitle">Dashboard Overview</h1>
-        <div class="page-sub" id="pageSub">Team performance summary</div>
+        <div class="page-sub" id="pageSub">Team performance summary for Mohammad Imam Hossain</div>
       </div>
     </div>
     <div class="status-cluster">
-      <div class="tl-filter-box">
-        <label for="topbarTlSelect">TL Name:</label>
-        <select id="topbarTlSelect" onchange="onTlChange(this.value)">
-          <option value="Mohammad Imam Hossain">Mohammad Imam Hossain</option>
-        </select>
-      </div>
       <span class="live-chip" id="liveChip"><span class="live-dot"></span><span id="statusText">Connecting…</span></span>
       <button id="exportBtn" onclick="exportCSV()">Export CSV</button>
       <button id="refreshBtn" onclick="loadData(true)">Refresh now</button>
@@ -330,7 +327,7 @@
     <!-- ============ OVERVIEW ============ -->
     <div class="page active" id="page-overview">
       <section>
-        <div class="section-head"><h2 id="overviewTlHeading">Mohammad Imam Hossain — Team KPI Summary</h2><span class="hint">Direct IB Sheet &amp; TL ORT Row</span></div>
+        <div class="section-head"><h2>Mohammad Imam Hossain — Team KPI Summary</h2><span class="hint">Direct IB Sheet &amp; TL ORT Row</span></div>
         <div class="kpi-row" id="kpiOverview"></div>
       </section>
       <section>
@@ -393,7 +390,7 @@
     <div class="page" id="page-empathy">
       <section>
         <div class="section-head"><h2>Empathy Parameter — Overall Pass %</h2><span class="hint">TL Aligned Summary</span></div>
-        <div class="grid-3" id="empathyParamCards" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;"></div>
+        <div id="empathyParamCards"></div>
       </section>
       <section>
         <div class="section-head"><h2>Agent × Parameter Matrix</h2><span class="hint">TL Active Agents Only</span></div>
@@ -458,7 +455,7 @@
     <!-- ============ COMPLAINT & DKB ============ -->
     <div class="page" id="page-complaint">
       <section>
-        <div class="section-head"><h2>Team Complaint &amp; DKB Summary</h2><span class="hint">Filtered TL Team</span></div>
+        <div class="section-head"><h2>Team Complaint &amp; DKB Summary</h2><span class="hint">Mohammad Imam Hossain Team</span></div>
         <div class="kpi-row" id="kpiComplaint"></div>
       </section>
       <section>
@@ -519,9 +516,9 @@
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzwyK3CxGbf16tvI-MNCuzIZKfnQ9SOkrCYksS7u0xCvX7l-FVnhz1KflmbjiWmFMo5/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyp_ConEgvJQrxHnfR17kCNtjn55EtjrVBeuqXzFfYfRq0woos59VHmKPqhblmeAoLG/exec";
 const REFRESH_INTERVAL_MS = 30000;
-let TARGET_TL_NAME = "Mohammad Imam Hossain";
+const TARGET_TL_NAME = "Mohammad Imam Hossain"; // Permanently Hardcoded
 const EMPATHY_AGENT_TARGET = 0.88;   
 const EMPATHY_PARAM_TARGET = 0.875;  
 const AHT_TARGET = 170;              
@@ -564,14 +561,17 @@ function normPct(v){
   return n > 1 ? n / 100 : n; 
 }
 
+// Fixed robust duration parser for Lag Hours and Breaks
 function parseDurationHours(v){
   if(v === null || v === undefined || v === '') return 0;
+  if(typeof v === 'number') return v;
   let s = String(v).trim();
   if(s.toLowerCase().startsWith('no ') || s === '0' || s === '—' || s === '-' || s.toLowerCase() === 'null') return 0;
   
   if(s.includes(' ')) {
     const parts = s.split(' ');
-    s = parts[parts.length - 1];
+    const last = parts[parts.length - 1];
+    if(last.includes(':')) s = last;
   } else if(s.includes('T')) {
     const parts = s.split('T');
     s = parts[parts.length - 1].replace('Z','');
@@ -585,7 +585,8 @@ function parseDurationHours(v){
     return timeParts[0] + timeParts[1]/60;
   }
 
-  const num = parseFloat(s);
+  const cleanNum = s.replace(/[^0-9.]/g, '');
+  const num = parseFloat(cleanNum);
   if(!isNaN(num)) return num;
   return 0;
 }
@@ -610,42 +611,7 @@ function getRowsByTL(sheetData, targetTL) {
   });
 }
 
-// TL Name Filter Switch Handler
-function onTlChange(val) {
-  if (val) {
-    TARGET_TL_NAME = val;
-    document.getElementById('overviewTlHeading').textContent = `${val} — Team KPI Summary`;
-    renderCurrentPage();
-  }
-}
-
-// Dynamic TL Dropdown Population
-function populateTlDropdown() {
-  const sel = document.getElementById('topbarTlSelect');
-  if (!sel) return;
-  const current = TARGET_TL_NAME;
-  
-  const tls = new Set();
-  (DATA.tlOrt || []).forEach(r => {
-    const name = String(getRowVal(r, ['TL Name', 'Tl Name', 'Team Leader', 'TL', 'Supervisor', 'Name']) || '').trim();
-    if (name) tls.add(name);
-  });
-  (DATA.alignment || []).forEach(r => {
-    const name = String(getRowVal(r, ['Team Leader', 'TL', 'TL Name', 'Supervisor']) || '').trim();
-    if (name) tls.add(name);
-  });
-
-  const list = Array.from(tls).sort();
-  if (list.length === 0) list.push("Mohammad Imam Hossain");
-
-  sel.innerHTML = list.map(t => `<option value="${t}" ${t===current?'selected':''}>${t}</option>`).join('');
-  if (!list.includes(current) && list.length > 0) {
-    TARGET_TL_NAME = list[0];
-    sel.value = list[0];
-  }
-}
-
-// Extract exact row for Selected TL from "TL ORT" sheet with Over Break fix
+// Extract exact row for Mohammad Imam Hossain from "TL ORT" sheet with Lag Hour fix
 function getTlOrtMetrics(targetTL) {
   const normTarget = normalizeName(targetTL);
   const tlOrtList = DATA.tlOrt || [];
@@ -661,10 +627,9 @@ function getTlOrtMetrics(targetTL) {
   }
 
   if (!row && tlOrtList.length > 0) {
-    const targetWords = normTarget.split(' ').filter(w => w.length > 2);
     for (const r of tlOrtList) {
       const rowStr = JSON.stringify(r).toLowerCase();
-      if (targetWords.some(w => rowStr.includes(w))) {
+      if (rowStr.includes('imam') || rowStr.includes('hossain')) {
         row = r;
         break;
       }
@@ -677,9 +642,12 @@ function getTlOrtMetrics(targetTL) {
     aht = numOf(getRowVal(row, ['AHT', 'Avg AHT', 'Average AHT', 'AHT (sec)', 'AHT Sec', 'AHTSec']));
     cfs = normPct(getRowVal(row, ['CFS %', 'CFS', 'Avg CFS %', 'Avg CFS', 'Average CFS', 'CFS Percent', 'CFS%']));
     adh = normPct(getRowVal(row, ['Adherence %', 'Adherence', 'Avg Adherence', 'Avg Adherence %', 'Team Avg Adherence', 'Adherence%']));
-    lag = parseDurationHours(getRowVal(row, ['Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag', 'LagTime']));
     
-    // OVER BREAK FIX: Handle numeric count, duration strings, or fallback calculation
+    // LAG HOUR EXTRACTION
+    const rawLag = getRowVal(row, ['Lag Hour', 'Lag Hours', 'Total Lag Hours', 'Lag Time', 'Lag', 'LagTime', 'Lag Hour(s)', 'Lag (Hours)', 'Total Lag']);
+    lag = parseDurationHours(rawLag);
+
+    // OVER BREAK EXTRACTION
     const rawOb = getRowVal(row, ['Agents with Over Break', 'Over Break', 'Over Break Count', 'Extra Break', 'OverBreak', 'Break Over']);
     if (rawOb !== '' && rawOb !== null && rawOb !== undefined) {
       const strOb = String(rawOb).trim();
@@ -693,13 +661,13 @@ function getTlOrtMetrics(targetTL) {
     }
   }
 
-  // Fallback: Calculate Over Break from ORT sheet for aligned agents if 0/empty
+  // Fallback: Sum up Lag Hours & Over Break from aligned agents in ORT sheet if missing/0 in TL ORT
   const alignedOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
   const ortOverBreakCount = alignedOrt.filter(r => parseDurationHours(getRowVal(r, ['Extra Break', 'Over Break', 'Break Over', 'OverBreak'])) > 0).length;
+  const ortLagSum = alignedOrt.reduce((s, r) => s + parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime', 'Total Lag Hours'])), 0);
 
-  if (overBreak === 0 && ortOverBreakCount > 0) {
-    overBreak = ortOverBreakCount;
-  }
+  if (overBreak === 0 && ortOverBreakCount > 0) overBreak = ortOverBreakCount;
+  if (lag === 0 && ortLagSum > 0) lag = ortLagSum;
 
   if (!row && alignedOrt.length > 0) {
     const ahtVals = alignedOrt.map(r => numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec']))).filter(v => v > 0);
@@ -710,8 +678,6 @@ function getTlOrtMetrics(targetTL) {
 
     const adhVals = alignedOrt.map(r => normPct(getRowVal(r, ['Adherence%', 'Adherence', 'Adherence Percent']))).filter(v => v !== null);
     adh = adhVals.length ? adhVals.reduce((a, b) => a + b, 0) / adhVals.length : 0;
-
-    lag = alignedOrt.reduce((s, r) => s + parseDurationHours(getRowVal(r, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime'])), 0);
   }
 
   return { aht, cfs, adh, lag, overBreak };
@@ -810,8 +776,6 @@ async function loadData(manual=false){
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const rawJson = await res.json();
     DATA = processPayload(rawJson);
-    
-    populateTlDropdown();
 
     chip.classList.remove('stale');
     const t = new Date(rawJson.generatedAt || Date.now());
@@ -830,7 +794,7 @@ function toggleSidebar(){ document.body.classList.toggle('sidebar-collapsed'); }
 function toggleMobileSidebar(){ document.body.classList.toggle('sidebar-open'); }
 
 const PAGE_META = {
-  overview:   {title:'Dashboard Overview', sub:'Team performance summary'},
+  overview:   {title:'Dashboard Overview', sub:'Team performance summary for Mohammad Imam Hossain'},
   agent:      {title:'Agent Performance', sub:'Individual quality evaluation & empathy parameters'},
   empathy:    {title:'Empathy Analysis', sub:'Parameter-wise empathy breakdown'},
   adherence:  {title:'Adherence & Break', sub:'Adherence, Over Break, Lag Hour & Service Delivery metrics'},
@@ -905,14 +869,13 @@ function agentAggregates(onlyRoster=false, activeOnly=true){
 
 // ---------- OVERVIEW PAGE ----------
 function renderOverview(){
-  document.getElementById('overviewTlHeading').textContent = `${TARGET_TL_NAME} — Team KPI Summary`;
   const box = document.getElementById('kpiOverview'); box.innerHTML='';
   
   const allAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, false);
   const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
   const tlAgentsCount = allAlignedAgents.length;
 
-  // 1. Audit Calculation directly from "IB agent wise" sheet for Filtered TL
+  // 1. Audit Calculation directly from "IB agent wise" sheet for Mohammad Imam Hossain
   let tlAudits = getRowsByTL(DATA.agentAudits, TARGET_TL_NAME);
   if (tlAudits.length === 0) {
     tlAudits = DATA.agentAudits.filter(r => isRosterAgent(getRowVal(r, ['Agent Name', 'Agent', 'Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
@@ -926,7 +889,7 @@ function renderOverview(){
   const efSum = tlAudits.reduce((s,r)=>s+numOf(getRowVal(r, ['Total Emp Parameter Fail Count', 'Emp Fail'])),0);
   const empPct = (epSum+efSum)>0 ? epSum/(epSum+efSum) : 0;
 
-  // 2. ORT Metrics directly from "TL ORT" sheet row for Filtered TL
+  // 2. ORT Metrics directly from "TL ORT" sheet row for Mohammad Imam Hossain
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
   const avgAht = tlOrtMetrics.aht;
   const avgCfs = tlOrtMetrics.cfs;
@@ -1205,7 +1168,7 @@ function renderEmpathyPage(){
   const body = document.getElementById('empathyMatrixBody'); 
   body.innerHTML = '';
 
-  // Table Matrix: ACTIVE AGENTS ONLY FOR FILTERED TL
+  // Table Matrix: ACTIVE AGENTS ONLY FOR MOHAMMAD IMAM HOSSAIN
   const activeRosterEmpathy = rows.filter(r => {
     const vdi = getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']);
     const name = getRowVal(r, ['Agent Name', 'Name', 'Agent']);
@@ -1241,7 +1204,7 @@ function renderEmpathyPage(){
 
 // ---------- ADHERENCE & BREAK PAGE ----------
 function renderAdherencePage(){
-  // Direct TL ORT Sheet row for Filtered TL
+  // Direct TL ORT Sheet row for Mohammad Imam Hossain
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
 
   const box = document.getElementById('kpiAdherence'); box.innerHTML='';
@@ -1266,9 +1229,11 @@ function renderAdherencePage(){
     totalTlSdCount += sdRows.length;
   });
 
+  const displayLag = totalLagHours > 0 ? (fmtHoursMin(totalLagHours) !== '—' ? fmtHoursMin(totalLagHours) : totalLagHours.toFixed(1) + 'h') : '0h';
+
   kpiCard(box, 'Team Avg Adherence', avgAdherence!==null?pct(avgAdherence):'—', (avgAdherence!==null && avgAdherence>=0.9)?'good':'warn', '◷', `TL ${TARGET_TL_NAME}`);
   kpiCard(box, 'Agents with Over Break', overBreakCount, overBreakCount>0?'warn':'good', '⚠', `TL ORT Metric`);
-  kpiCard(box, 'Total Lag Hours', totalLagHours.toFixed(1)+'h', 'bad', '⏳', `TL ORT Metric`);
+  kpiCard(box, 'Total Lag Hours', displayLag, 'bad', '⏳', `TL ORT Metric`);
   kpiCard(box, 'Service Delivery Count', totalTlSdCount, 'good', '🚚', `TL ${TARGET_TL_NAME}`);
 
   // Tables — ACTIVE ALIGNED AGENTS ONLY
@@ -1296,7 +1261,7 @@ function renderAdherencePage(){
     const ortRow = ortMap.get('vdi_' + normVdi) || ortMap.get('name_' + normName) || null;
     const adh = ortRow ? normPct(getRowVal(ortRow, ['Adherence%', 'Adherence'])) : null;
     const overBreak = ortRow ? parseDurationHours(getRowVal(ortRow, ['Extra Break', 'Over Break', 'Break Over', 'OverBreak'])) : 0;
-    const lag = ortRow ? parseDurationHours(getRowVal(ortRow, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime'])) : 0;
+    const lag = ortRow ? parseDurationHours(getRowVal(ortRow, ['Lag Time', 'Lag Hour', 'Lag', 'LagTime', 'Total Lag Hours'])) : 0;
 
     return { name: ag.name, vdi: ag.vdi, adh, overBreak, lag };
   });
@@ -1332,14 +1297,14 @@ function renderAdherencePage(){
 
 // ---------- AHT & CFS PAGE ----------
 function renderAhtCfsPage(){
-  // Direct TL ORT Sheet calculation for Filtered TL
+  // Direct TL ORT Sheet calculation for Mohammad Imam Hossain
   const tlOrtMetrics = getTlOrtMetrics(TARGET_TL_NAME);
   const box = document.getElementById('kpiAhtCfs'); box.innerHTML='';
 
   const avgAht = tlOrtMetrics.aht;
   const avgCfs = tlOrtMetrics.cfs;
 
-  // Calculate AHT & CFS Target Met counts based strictly on ALIGNED AGENTS of Filtered TL in ORT Sheet
+  // Calculate AHT & CFS Target Met counts based strictly on ALIGNED AGENTS of Mohammad Imam Hossain in ORT Sheet
   const alignedOrt = DATA.ort.filter(r => isRosterAgent(getRowVal(r, ['Name', 'Agent Name', 'Agent']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), false));
 
   const ahtMeeting = alignedOrt.filter(r => { const v = numOf(getRowVal(r, ['AHT', 'AHT (sec)', 'AHT Sec'])); return v > 0 && v <= AHT_TARGET; }).length;
@@ -1545,7 +1510,7 @@ function renderAuditLog(){
   const resFilter = document.getElementById('logResultFilter') ? document.getElementById('logResultFilter').value : '';
   const tbody = document.getElementById('auditLogTable'); tbody.innerHTML='';
   
-  // ACTIVE AGENTS ONLY FOR FILTERED TL
+  // ACTIVE AGENTS ONLY FOR MOHAMMAD IMAM HOSSAIN
   const rosterAudits = DATA.agentAudits.filter(r => isRosterAgent(getRowVal(r, ['Agent Name', 'Agent', 'Name']), getRowVal(r, ['VDI ID', 'VDI', 'Emp ID']), true));
   
   const sorted = [...rosterAudits].sort((a,b)=>{
