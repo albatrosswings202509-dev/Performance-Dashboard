@@ -298,12 +298,12 @@
     </div>
     <div class="sidebar-nav">
       <div class="nav-item active" data-page="overview" onclick="setPage('overview')"><span class="ic">▤</span>Dashboard</div>
-      <div class="nav-item" data-page="card" onclick="setPage('card')"><span class="ic">🪪</span>Performance Card</div>
       <div class="nav-item" data-page="agent" onclick="setPage('agent')"><span class="ic">☺</span>Audit Report</div>
       <div class="nav-item" data-page="empathy" onclick="setPage('empathy')"><span class="ic">♥</span>Empathy Analysis</div>
       <div class="nav-item" data-page="adherence" onclick="setPage('adherence')"><span class="ic">◷</span>Adherence &amp; Break</div>
       <div class="nav-item" data-page="ahtcfs" onclick="setPage('ahtcfs')"><span class="ic">◎</span>AHT &amp; CFS</div>
       <div class="nav-item" data-page="complaint" onclick="setPage('complaint')"><span class="ic">⚠</span>Complaint &amp; DKB %</div>
+      <div class="nav-item" data-page="card" onclick="setPage('card')"><span class="ic">🪪</span>Performance Card</div>
       <div class="nav-item" data-page="log" onclick="setPage('log')"><span class="ic">▦</span>Audited Call details</div>
     </div>
     <div class="sidebar-foot">Better Quality<br>Stronger Performance</div>
@@ -363,23 +363,6 @@
           </div>
         </div>
       </section>
-    </div>
-
-    <!-- ============ PERFORMANCE CARD SHEET ============ -->
-    <div class="page" id="page-card">
-      <div class="filterbar">
-        <div class="fgroup">
-          <label>Select Active Agent</label>
-          <select id="agentCardSelect" onchange="renderPerformanceCard()">
-            <option value="">-- Choose Agent --</option>
-          </select>
-        </div>
-      </div>
-      <div id="performanceCardContainer">
-        <div class="empty-note" style="background:#fff; border-radius:10px; border:1px solid var(--line); margin-top:10px;">
-          Please select an agent from the dropdown above to view their consolidated Performance Card.
-        </div>
-      </div>
     </div>
 
     <!-- ============ AUDIT REPORT ============ -->
@@ -499,6 +482,23 @@
           </table>
         </div>
       </section>
+    </div>
+
+    <!-- ============ PERFORMANCE CARD SHEET (2nd Last) ============ -->
+    <div class="page" id="page-card">
+      <div class="filterbar">
+        <div class="fgroup">
+          <label>Select Active Agent</label>
+          <select id="agentCardSelect" onchange="renderPerformanceCard()">
+            <option value="">-- Choose Agent --</option>
+          </select>
+        </div>
+      </div>
+      <div id="performanceCardContainer">
+        <div class="empty-note" style="background:#fff; border-radius:10px; border:1px solid var(--line); margin-top:10px;">
+          Please select an agent from the dropdown above to view their consolidated Performance Card.
+        </div>
+      </div>
     </div>
 
     <!-- ============ AUDITED CALL DETAILS ============ -->
@@ -736,7 +736,8 @@ function getAlignmentAgents(tlNameFilter = null, activeOnly = false) {
   const list = [];
   (DATA.alignment || []).forEach(row => {
     const name = String(getRowVal(row, ['Agent Name', 'Name', 'Agent', 'Employee Name', 'Staff Name', 'Resource Name']) || '').trim();
-    const vdi = String(getRowVal(row, ['VDI ID', 'VDI', 'VDI_ID', 'Emp ID', 'Employee ID', 'VDIID', 'User ID', 'ID']) || '').trim();
+    const vdi = String(getRowVal(row, ['VDI ID', 'VDI', 'VDI_ID', 'VDIID']) || '').trim();
+    const empId = String(getRowVal(row, ['ID', 'Emp ID', 'Employee ID', 'User ID', 'Staff ID']) || '').trim();
     const tl = String(getRowVal(row, ['Team Leader', 'TL', 'TL Name', 'Supervisor']) || '').trim();
     const status = String(getRowVal(row, ['Status', 'Agent Status', 'Emp Status', 'State']) || '').trim().toLowerCase();
 
@@ -750,8 +751,8 @@ function getAlignmentAgents(tlNameFilter = null, activeOnly = false) {
 
     if (activeOnly && status === 'inactive') return;
 
-    if (name || vdi) {
-      list.push({ name, vdi, tl, status: status || 'active', row });
+    if (name || vdi || empId) {
+      list.push({ name, vdi, empId, tl, status: status || 'active', row });
     }
   });
   return list;
@@ -813,12 +814,12 @@ function toggleMobileSidebar(){ document.body.classList.toggle('sidebar-open'); 
 
 const PAGE_META = {
   overview:   {title:'Dashboard Overview'},
-  card:       {title:'Performance Card'},
   agent:      {title:'Audit Report'},
   empathy:    {title:'Empathy Analysis'},
   adherence:  {title:'Adherence & Break'},
   ahtcfs:     {title:'AHT & CFS'},
   complaint:  {title:'Complaint & DKB %'},
+  card:       {title:'Performance Card'},
   log:        {title:'Audited Call details'}
 };
 
@@ -1051,7 +1052,7 @@ function renderPerformanceCard(){
   }
 
   const activeAlignedAgents = getAlignmentAgents(TARGET_TL_NAME, true);
-  const agentObj = activeAlignedAgents.find(a => normalizeName(a.name) === normalizeName(agentName)) || { name: agentName, vdi: '—' };
+  const agentObj = activeAlignedAgents.find(a => normalizeName(a.name) === normalizeName(agentName)) || { name: agentName, vdi: '—', empId: '—' };
   const normAgent = normalizeName(agentObj.name);
   const normVdi = normalizeName(agentObj.vdi);
 
@@ -1127,7 +1128,7 @@ function renderPerformanceCard(){
     <div class="perf-header">
       <div>
         <div class="ph-title">${agentObj.name}</div>
-        <div class="ph-meta">VDI ID: ${agentObj.vdi || '—'} &nbsp;|&nbsp; Team Leader: ${TARGET_TL_NAME} &nbsp;|&nbsp; Total Audits: ${auditAgg.total}</div>
+        <div class="ph-meta">ID: ${agentObj.empId || '—'} &nbsp;|&nbsp; VDI ID: ${agentObj.vdi || '—'} &nbsp;|&nbsp; Team Leader: ${TARGET_TL_NAME} &nbsp;|&nbsp; Total Audits: ${auditAgg.total}</div>
       </div>
     </div>
 
@@ -1225,9 +1226,9 @@ function renderPerformanceCard(){
             <div class="pmetric-label">Adherence %</div>
             <div class="pmetric-val">${adh !== null ? pct(adh) : '—'}</div>
           </div>
-          <span class="pmetric-status ${adh !== null && adh >= 0.90 ? 'pill good' : 'pill warn'}">${adh !== null && adh >= 0.90 ? 'Good' : 'Needs Improvement'}</span>
+          <span class="pmetric-status ${adh !== null && adh >= 1.00 ? 'pill good' : 'pill warn'}">${adh !== null && adh >= 1.00 ? 'Good' : 'Needs Improvement'}</span>
         </div>
-        <div class="pmetric-target">Target: 90.0%</div>
+        <div class="pmetric-target">Target: 100%</div>
       </div>
 
       <!-- DKB HEALTH % CARD -->
@@ -1237,9 +1238,9 @@ function renderPerformanceCard(){
             <div class="pmetric-label">DKB %</div>
             <div class="pmetric-val">${dkbHealthPct !== null ? pct(dkbHealthPct) : '—'}</div>
           </div>
-          <span class="pmetric-status ${dkbHealthPct !== null && dkbHealthPct >= 0.85 ? 'pill good' : 'pill warn'}">${dkbHealthPct !== null && dkbHealthPct >= 0.85 ? 'Good' : 'Needs Improvement'}</span>
+          <span class="pmetric-status ${dkbHealthPct !== null && dkbHealthPct >= 0.95 ? 'pill good' : 'pill warn'}">${dkbHealthPct !== null && dkbHealthPct >= 0.95 ? 'Good' : 'Needs Improvement'}</span>
         </div>
-        <div class="pmetric-target">DKB Health Status</div>
+        <div class="pmetric-target">Target: 95%</div>
       </div>
 
       <!-- SERVICE DELIVERY & CRITICAL ERROR SUMMARY -->
