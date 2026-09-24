@@ -970,7 +970,7 @@ function renderOverview(){
   kpiCard(box, 'Avg Adherence', avgAdh!==null?pct(avgAdh):'—', (avgAdh!==null && avgAdh>=0.9)?'good':'warn', '◷', '');
   kpiCard(box, 'Service Delivery', tlSdCount, 'good', '🚚', ``);
   kpiCard(box, 'Valid Escalation %', pct(validEscPct), 'purple', '⚑', `${totalValid}/${totalComp} Valid`);
-  kpiCard(box, 'DKB %', pct(dkbPct), dkbPct >= 0.85 ? 'good' : 'warn', '▦', '');
+  kpiCard(box, 'Avg DKB Health %', pct(avgDkbHealth), avgDkbHealth>=0.85?'good':'warn', '▦', '');
   kpiCard(box, 'TL Alignment Count', tlAgentsCount, 'purple', '☺', `${activeAlignedAgents.length} Active / ${tlAgentsCount} Total`);
 
   // Leaderboard Tables
